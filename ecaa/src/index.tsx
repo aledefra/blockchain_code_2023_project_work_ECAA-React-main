@@ -7,7 +7,7 @@ import { alchemyProvider } from "wagmi/providers/alchemy";
 import { polygonMumbai } from "wagmi/chains";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 
-const alchemyKey = "";
+const alchemyKey = "z8b0aKqHNwhW3rp7JdoPv1_dUrOAW1dI";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
