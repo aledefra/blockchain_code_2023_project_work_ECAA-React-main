@@ -1,3 +1,4 @@
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
@@ -6,10 +7,8 @@ import reportWebVitals from "./reportWebVitals";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { polygonMumbai } from "wagmi/chains";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
-import dotenv from "dotenv";
 
-const alchemyKey = "m1UoxQUZeTSNFmdyyr_GnnVl8HBSNAcJ";
-// const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY ?? "";
+const alchemyKey = "z8b0aKqHNwhW3rp7JdoPv1_dUrOAW1dI";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
