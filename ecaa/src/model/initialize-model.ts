@@ -1,5 +1,5 @@
 export interface IInitialize {
-    owners : string[],
+    owners : string[]
     numConfirmationsRequired: number,
     numTreshold: number
 }
