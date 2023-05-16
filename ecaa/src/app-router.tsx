@@ -3,7 +3,7 @@ import { Homepage } from "./pages/homepage/homepage";
 import { MultisigWallet } from "./pages/multisigWallet/multisigWallet";
 import { NotFound } from "./pages/not-found/notFound";
 import { CreateWallet } from "./pages/createWallet/createWallet";
-import { defaultInitialize } from "./utils/createWallet";
+import { defaultInitialize} from "./utils/createWallet";
 
 export const AppRoutes = () => {
     return (
@@ -13,7 +13,7 @@ export const AppRoutes = () => {
                 <Route index element={<MultisigWallet />} />
                 <Route path=":address" element={<MultisigWallet />} />
 
-                    <Route path="new" element= {<CreateWallet defaultValue={defaultInitialize} />} />
+                    <Route path="new" element= {<CreateWallet defaultValue={defaultInitialize}/>} />
                 </Route>
                 <Route path="*" element ={<NotFound />} />
             

@@ -1,6 +1,6 @@
 export interface IProposalType {
     Transaction: number,
-    NewOwner: number,
+    NewOwner: string,
     RemoveOwner: number,
     ChangeThreshold: number,
     ChangeOwner: number,
@@ -15,4 +15,6 @@ export interface IProposal {
     ProposalType: number,
     proposalData: number
 }
+
+
 
