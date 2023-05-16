@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { useState } from "react";
 import { useAccount, useBalance, useConnect } from "wagmi";
-import { useContractRead } from 'wagmi';
+import { useContractRead, useContractEvent } from 'wagmi';
 
 
 
@@ -15,32 +15,49 @@ const contract = new ethers.Contract(contractAddress, contractAbi, provider);
 
 
 export const MultisigWallet = () => {
-    const addressNewContract =
-contract.once("ProxyCreated", async (_address, abi) => {
-    console.log("multisig creato 2:", _address);
-    console.log("questa è l'abi del nuovo contratto", abi);
-});
+//     const addressNewContract =
+// contract.once("ProxyCreated", async (_address, abi) => {
+//     console.log("multisig creato 2:", _address);
+//     console.log("questa è l'abi del nuovo contratto", abi);
+// });
 //const NewContract = new ethers.Contract(addressNewContract._address, addressNewContract.abi, provider);
 
 
     const { address } = useAccount();
-    const { data, isError, isLoading } = useContractRead({
-        address: addressNewContract._address,
-        abi: addressNewContract.abi,
-        functionName: 'getOwners'
+    // const { data, isError, isLoading } = useContractRead({
+    //     address: addressNewContract._address,
+    //     abi: addressNewContract.abi,
+    //     functionName: 'getOwners'
         
-      })
+    //   })
    
       
-      console.log("questo è il nuovo contratto", addressNewContract._address)
+    //   console.log("questo è il nuovo contratto", addressNewContract._address)
+useContractEvent({
+        address: contractAddress,
+        abi: contractAbi,
+        eventName: "ProxyCreated",
+        listener(args)  { 
+           console.log(args);
+         }
       
+      });
+   
+
+
+
+
+
+
+
     return (
       <div className="MyMultisig">
         <h1>MultisigWallet</h1>
+        
         <div>
         
         
-        {address && <div>Address: {addressNewContract._address}</div>}
+       
         
       
       
