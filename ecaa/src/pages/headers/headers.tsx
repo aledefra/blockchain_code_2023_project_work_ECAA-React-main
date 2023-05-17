@@ -13,7 +13,11 @@ export const Header = () => {
       </Link>
       <Link className="link" to="/wallets/new">
         {" "}
-        Create Wallet
+        create Wallet
+      </Link>
+      <Link className="link" to="/wallets/proposals">
+        {" "}
+        create Proposal
       </Link>
     </div>
   );

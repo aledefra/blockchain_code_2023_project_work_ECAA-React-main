@@ -23,9 +23,9 @@ export const ProposalCard = (props: Props) => {
   return (
     <div className="proposal-card">
       <b>Index: {proposal?.index.toString()}</b>
-      <p>Executed: {proposal?.executed}</p>
+      <p>Executed: {proposal?.executed.toString()}</p>
       <p>numConfirmations: {proposal?.numConfirmations.toString()}</p>
-      <p>ProposalType: {proposal?.proposalType.toString()}</p>
+      <p>ProposalType: {proposal?.ProposalType.toString()}</p>
       <p>proposalData: {proposal?.proposalData}</p>
 
       <Link to={`/proposals/${proposal?.index}`} state={proposal}>
