@@ -1,3 +1,5 @@
+
+import { contractAbi } from "./proxycontractABI";
 import { ethers } from "ethers";
 import {
   useAccount,
@@ -6,82 +8,32 @@ import {
   usePrepareContractWrite,
   useContractWrite,
   useWaitForTransaction,
-  useContractEvent
+  Address,
 } from "wagmi";
 import { IInitialize } from "../../model/initialize-model";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
-import { contractAbi } from "./proxycontractABI";
 
 type PcreateWallet = {
   defaultValue: IInitialize;
 };
 
-// const contractAbi = [
-//   {
-//     inputs: [
-//       {
-//         internalType: "address",
-//         name: "_implementationContract",
-//         type: "address",
-//       },
-//     ],
-//     stateMutability: "nonpayable",
-//     type: "constructor",
-//   },
-//   {
-//     anonymous: false,
-//     inputs: [
-//       {
-//         indexed: false,
-//         internalType: "address",
-//         name: "proxy",
-//         type: "address",
-//       },
-//     ],
-//     name: "ProxyCreated",
-//     type: "event",
-//   },
-//   {
-//     inputs: [
-//       { internalType: "address[]", name: "_owners", type: "address[]" },
-//       {
-//         internalType: "uint256",
-//         name: "_numConfirmationsRequired",
-//         type: "uint256",
-//       },
-//       { internalType: "uint256", name: "_numTreshold", type: "uint256" },
-//     ],
-//     name: "createWallet",
-//     outputs: [{ internalType: "address", name: "", type: "address" }],
-//     stateMutability: "nonpayable",
-//     type: "function",
-//   },
-//   {
-//     inputs: [],
-//     name: "implementationContract",
-//     outputs: [{ internalType: "address", name: "", type: "address" }],
-//     stateMutability: "view",
-//     type: "function",
-//   },
-// ];
-
 const contractAddress = "0x078c1b2e22677C910dbEA73885Cef1ED679E2e3d";
+
 export const CreateWallet = (props: PcreateWallet) => {
-  const [creatingWallet, setCreatingWallet] = useState("");
   const [owners, setOwners] = useState("");
   const [confirmations, setConfirmations] = useState("");
   const [treshold, setTreshold] = useState("");
+  const [name, setName] = useState("");
   const [newWalletAddress, setNewWalletAddress] = useState("");
 
   //parametri per la creazione del wallet
   const debouncedOwners = useDebounce(owners, 500);
-  //console.log("Debounced", debouncedOwners);
+  console.log("Debounced", debouncedOwners);
   const debouncedConfirmations = useDebounce(confirmations, 500);
   const debouncedTreshold = useDebounce(treshold, 500);
-  const debouncedCreatingContract = useDebounce(creatingWallet, 500);
 
   const { address, isConnected } = useAccount();
   const { data: balance } = useBalance({ address });
@@ -106,7 +58,7 @@ export const CreateWallet = (props: PcreateWallet) => {
   const formattedOwners = debouncedOwners[0]
     .split(",")
     .map((address) => address.trim());
-  //console.log("formatted owners", formattedOwners);
+  console.log("formatted owners", formattedOwners);
 
   //preparo la funzione per creare il wallet
   const {
@@ -123,7 +75,6 @@ export const CreateWallet = (props: PcreateWallet) => {
       parseInt(debouncedTreshold[0]),
     ],
     //args:[["0x4165279351bFA40e821ac16AeA60ed29d9c1Bb29", "0x63ce1ec5bf1163dc7dcf2c1d7f5d5f3d56c6fcbb"],1 , 1],
-    enabled: Boolean(debouncedCreatingContract),
   });
 
   const {
@@ -133,8 +84,8 @@ export const CreateWallet = (props: PcreateWallet) => {
     error,
     write,
   } = useContractWrite(config);
-  //console.log(config);
-  //console.log(dataContract);
+  console.log(config);
+  console.log(dataContract);
 
   function onSubmit() {
     if (!write) return;
@@ -147,25 +98,30 @@ export const CreateWallet = (props: PcreateWallet) => {
   });
   const isCreateWallet = txSuccess;
 
-  if (isCreateWallet) {
-    contract.once("ProxyCreated", async (_address) => {
+  useEffect(() => {
+    const handleProxyCreated = async (_address: Address) => {
       setNewWalletAddress(_address);
-      //console.log("multisig creato:", newWalletAddress);
+      console.log("multisig creato:", newWalletAddress);
+    };
 
-      //navigate(`/wallets/${_address}}`);
-    });
+    contract.once("ProxyCreated", handleProxyCreated);
+  }, []);
 
-    //console.log(error?.message);
-  }
+  useEffect(() => {
+    if (newWalletAddress) {
+      const savedContracts = JSON.parse(
+        localStorage.getItem("contracts") || "[]"
+      );
+      const newContract = { address: newWalletAddress, name: name };
+      localStorage.setItem(
+        "contracts",
+        JSON.stringify([...savedContracts, newContract])
+      );
 
-  // useContractEvent({
-  //   address: contractAddress,
-  //   abi: contractAbi,
-  //   eventName: "ProxyCreated",
-  //   listener(args) {
-  //     console.log("arguments from event" , args);
-  //   },
-  // });
+      props.defaultValue.newWalletAddress = newWalletAddress;
+      navigate(`/wallets/${newWalletAddress}`);
+    }
+  }, [newWalletAddress]);
 
   return (
     <div className="createWallet">
@@ -182,7 +138,7 @@ export const CreateWallet = (props: PcreateWallet) => {
       </div>
 
       <div>
-        <p>Proxy Contract Address: {contractAddress}</p>
+        {isConnected && <p>Proxy Contract Address: {contractAddress}</p>}
         {isCreateWallet && (
           <p>Creato multisig, transaction hash: {dataContract?.hash}</p>
         )}
@@ -193,19 +149,14 @@ export const CreateWallet = (props: PcreateWallet) => {
 
       {isCreateWallet && (
         <div>
-          view tx on{" "}
+          view tx oon{" "}
           <a href={`https://mumbai.polygonscan.com/tx/${dataContract?.hash}`}>
             Polygon Mumbai scan
           </a>
         </div>
       )}
 
-      <form
-      // onSubmit={(e) => {
-      //   e.preventDefault();
-      //   write?.();
-      // }}
-      >
+      <form>
         <div className="row">
           <label className="queryInput" htmlFor="owners">
             Insert owners:
@@ -258,13 +209,30 @@ export const CreateWallet = (props: PcreateWallet) => {
           />
         </div>
 
+        <div className="row">
+          <label className="queryInput" htmlFor="name">
+            Insert name:
+          </label>
+
+          <input
+            className="input"
+            id="name"
+            {...register("name", {
+              required: { value: true, message: "Field required" },
+              //minLength: { value: 1, message: "Min 1 character allowed" },
+            })}
+            onChange={(e) => setName(e.target.value)}
+            value={name}
+            placeholder="name"
+          />
+        </div>
+
         <div>
           {isConnected && !isCreateWallet && (
             <button
               className="btn"
               type="submit"
               onClick={handleSubmit(onSubmit)}
-              value={creatingWallet}
               disabled={isCreateLoading || isCreateStarted}
               //per il css
               data-create-loading={isCreateLoading}
