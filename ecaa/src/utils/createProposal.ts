@@ -18,7 +18,7 @@ export const defaultTransferProposal : IProposal ={
     index: 0,
     executed: false,
     numConfirmations: 0,
-    ProposalType: 0 || 1 || 2 || 3 || 4 || 5 || 6,
+    proposalType: 0 || 1 || 2 || 3 || 4 || 5 || 6,
     proposalData: 0
 }
 

@@ -14,7 +14,7 @@ export interface IProposal {
     index: number,
     executed: boolean,
     numConfirmations: number,
-    ProposalType: number,
+    proposalType: number,
     proposalData: number
 }
 

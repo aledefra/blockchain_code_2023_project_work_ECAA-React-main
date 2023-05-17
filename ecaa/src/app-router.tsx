@@ -6,6 +6,7 @@ import { CreateWallet } from "./pages/createWallet/createWallet";
 import { defaultInitialize} from "./utils/createWallet";
 import { CreateProposal } from "./pages/proposals/proposal-type";
 import { defaultValueProposal } from "./utils/createProposal";
+import { MultisigWallet } from "./pages/multisigWallet/multisigWallet";
 
 
 export const AppRoutes = () => {
@@ -14,7 +15,7 @@ export const AppRoutes = () => {
             <Route path="/" element={<Homepage />} />
             <Route path="/wallets">
                 <Route index element={<MyWallets />} />
-                <Route path=":address" element={<MyWallets />} />
+                <Route path=":address" element={<MultisigWallet />} />
 
                     <Route path="new" element= {<CreateWallet defaultValue={defaultInitialize}/>} />
                     <Route path="proposals" element= {<CreateProposal {...defaultValueProposal} /> } />
