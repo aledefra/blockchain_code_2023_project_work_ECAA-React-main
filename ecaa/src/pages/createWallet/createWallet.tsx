@@ -1,4 +1,3 @@
-
 import { contractAbi } from "./proxycontractABI";
 import { ethers } from "ethers";
 import {
@@ -177,7 +176,7 @@ export const CreateWallet = (props: PcreateWallet) => {
 
         <div className="row">
           <label className="queryInput" htmlFor="numConfirmationsRequired">
-            Insert Number of Confirmation Required:
+            Insert Number of Confirmations Required:
           </label>
 
           <input
@@ -194,7 +193,7 @@ export const CreateWallet = (props: PcreateWallet) => {
 
         <div className="row">
           <label className="queryInput" htmlFor="numTreshold">
-            Insert numero Treshold:
+            Insert Treshold number:
           </label>
 
           <input

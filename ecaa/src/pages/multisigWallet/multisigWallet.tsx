@@ -1,12 +1,11 @@
 import { ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAccount } from "wagmi";
 import { useContractRead } from "wagmi";
 import { CreateWallet } from "../createWallet/createWallet";
 import { defaultInitialize } from "../../utils/createWallet";
 import { useLocation } from "react-router-dom";
-import {contractAbi} from "./multisigABI"
-import { IProposal } from "../../model/proposalType-model";
+import { contractAbi } from "./multisigABI";
 import { ProposalCard } from "../../components/proposal-card";
 
 const contractAddress = defaultInitialize.newWalletAddress;
@@ -42,49 +41,24 @@ export const MultisigWallet = () => {
 
   //MAYBE we can get the proposals from the event??
 
-  const FetchProposal = () => {
-    const { data: Proposal } = useContractRead({
-      address: "0xECD22BD9761CBb3Eda09377Dd70cA9ea71BA2fA3",
-      abi: contractAbi,
-      functionName: "proposals",
-      args: [`${index}`],
-    });
-    const prop = Proposal as IProposal;
-
-    const proposal = {
-      index: parseInt(prop.index.toString()),
-      executed: prop.executed,
-      numConfirmations: parseInt(prop.numConfirmations.toString()),
-      proposalType: prop.proposalType,
-      proposalData: prop.proposalData,
-    };
-    // console.log("Proposal: ", proposal);
-    return proposal;
-  };
-
-  const dataList = [];
+  const proposalCards = [];
   for (let i = 0; i < numberofProposals; i++) {
-    const data = FetchProposal();
-    dataList.push(data);
+    proposalCards.push(
+      <ProposalCard key={i} index={i} contractAbi={contractAbi} />
+    );
   }
-  console.log("DataList: ", dataList);
-
-  // I forgot to indexx++ but if i do so it will crash
 
   return (
     <div className="MyMultisig">
-      {dataList.length !== 0 && (
+      {numberofProposals !== 0 && (
         <div className="animals-list search-card ">
           Proposals found:
-          {dataList.map((proposal) => (
-            <ProposalCard key={proposal.index} proposal={proposal} />
-          ))}
+          {proposalCards}
         </div>
       )}
-      {dataList.length === 0 && (
+      {numberofProposals === 0 && (
         <p className="not-found"> No proposals found</p>
       )}
     </div>
   );
 };
-
