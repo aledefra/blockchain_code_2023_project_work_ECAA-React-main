@@ -28,17 +28,17 @@ export const MyWallets = () => {
     setSelectedAddress(event.target.value);
   };
 
-  const handleCreateProposal = () => {
-    // Controlla se è stato selezionato un indirizzo
-    if (selectedAddress) {
-      // Effettua l'azione desiderata con l'indirizzo selezionato
-      navigate("/wallets/proposals", {
-        state: { contractAddress: selectedAddress },
-      });
-    } else {
-      // Nessun indirizzo selezionato, gestisci l'errore o mostra un messaggio all'utente
-    }
-  };
+  // const handleCreateProposal = () => {
+  //   // Controlla se è stato selezionato un indirizzo
+  //   if (selectedAddress) {
+  //     // Effettua l'azione desiderata con l'indirizzo selezionato
+  //     navigate("/wallets/proposals", {
+  //       state: { contractAddress: selectedAddress },
+  //     });
+  //   } else {
+  //     // Nessun indirizzo selezionato, gestisci l'errore o mostra un messaggio all'utente
+  //   }
+  // };
 
   return (
     <div className="MyMultisig">
@@ -50,7 +50,7 @@ export const MyWallets = () => {
           </div>
         ))}
 
-        <div className="row">
+        {/* <div className="row">
           <label className="queryInput" htmlFor="select">
             Select an address:
           </label>
@@ -62,13 +62,13 @@ export const MyWallets = () => {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
 
-        {address && <div>Address: {selectedAddress}</div>}
+        {/* {address && <div>Address: {selectedAddress}</div>}
 
         <button type="button" onClick={handleCreateProposal}>
           Create Proposal
-        </button>
+        </button> */}
       </div>
     </div>
   );

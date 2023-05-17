@@ -120,7 +120,7 @@ export const CreateWallet = (props: PcreateWallet) => {
       );
 
       props.defaultValue.newWalletAddress = newWalletAddress;
-      navigate(`/wallets/${newWalletAddress}`);
+      navigate(`/wallets`);
     }
   }, [newWalletAddress]);
 
