@@ -1,4 +1,5 @@
 import { IInitialize } from "../model/initialize-model";
+import { IProposalType } from "../model/proposalType-model";
 
 
 export const defaultInitialize : IInitialize = {

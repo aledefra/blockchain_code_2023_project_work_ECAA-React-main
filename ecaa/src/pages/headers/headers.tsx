@@ -15,10 +15,7 @@ export const Header = () => {
         {" "}
         create Wallet
       </Link>
-      {/* <Link className="link" to="/wallets/proposals">
-        {" "}
-        create Proposal
-      </Link> */}
+    
     </div>
   );
 };
