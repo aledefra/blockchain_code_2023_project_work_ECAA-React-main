@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { contractAbi } from "../multisigWallet/multisigABI";
+import { contractAbi } from "../../contractABIs/multisigABI";
 import { defaultInitialize } from "../../utils/createWallet";
 import { ethers } from "ethers";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";

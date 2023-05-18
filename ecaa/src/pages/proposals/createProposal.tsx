@@ -1,67 +1,116 @@
-import {  useState } from "react";
+import { useEffect, useState } from "react";
 import { contractAbi } from "../../contractABIs/multisigABI";
+import { defaultInitialize } from "../../utils/createWallet";
 import { ethers } from "ethers";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { useForm } from "react-hook-form";
 import { IProposalType } from "../../model/proposalType-model";
 import { useLocation, useParams } from "react-router-dom";
 
-type PchoseType = {
-  defaultValues: IProposalType;
-};
 export const CreateProposal = (props: IProposalType) => {
+  type PCreateProposal = {
+    defaultValues: IProposalType;
+  };
+  type PChooseTypeProposal = {
+    type: number;
+  };
+
+  type PTransactionProposal = {
+    addressTo: string;
+    amount: string;
+  };
+
+  type PNewOwnerProposal = {
+    newOwner: string;
+  };
+  type PRemoveOwnerProposal = {
+    removeOwner: string;
+  };
+  type PChangeTresholdProposal = {
+    treshold: string;
+  };
+
+  type PChangeOwnersProposal = {
+    addressOldOwner: string;
+    addressNewOwnerChanged: string;
+  };
+  type PTokenTransactionProposal = {
+    addressToTokentransfer: string;
+    addressToken: string;
+    amountToken: string;
+  };
+  type PNFTTransactionProposal = {
+    addressToNFTtransfer: string;
+    addressNFT: string;
+    idNFT: string;
+  };
+
   const location = useLocation();
   const selectedAddress = location.state?.selectedAddress || "";
   const params = useParams();
-  const address = params.address as `0x${string}`;
+  const myAddress = params.address as `0x${string}`;
+
+  console.log("questo è l'address da dove arrivo:", myAddress);
 
   //const contractAddress: string = defaultInitialize.newWalletAddress;
   const contractAddress = selectedAddress;
   console.log("questo è il contract address", contractAddress.toString());
   console.log("questo è il selected address", selectedAddress.toString());
 
-  //Proposal Transaction
-  const [addressTo, setAddressTo] = useState("");
-  const formattedAddressTo = addressTo as `0x${string}`;
-  const [amount, setAmount] = useState("");
+  const [chooseType, setChoseType] = useState<PChooseTypeProposal>({
+    type: 0 || 1 || 2 || 3 || 4 || 5 || 6,
+  });
 
-  //Proposal New Owner
+  //Proposal Transaction 0
+  const [transactionProposal, setTransactionProposal] =
+    useState<PTransactionProposal>({
+      addressTo: "",
+      amount: "",
+    });
 
-  const [newOwner, setNewOwner] = useState("");
-  const formattedAddressNewOwner: `0x${string}` = `0x${newOwner}`;
+  //Proposal New Owner 1
 
-  //Proposal Remove Owner
+  const [newOwner, setNewOwner] = useState<PNewOwnerProposal>({
+    newOwner: "",
+  });
 
-  const [removeOwner, setRemoveOwner] = useState("");
-  const formattedAddressRemoveOwner: `0x${string}` = `0x${removeOwner}`;
+  //Proposal Remove Owner 2
 
-  //Proposal Change Treshold
+  const [removeOwner, setRemoveOwner] = useState<PRemoveOwnerProposal>({
+    removeOwner: "",
+  });
 
-  const [treshold, setTreshold] = useState("");
+  //Proposal Change Treshold 3
+
+  const [treshold, setTreshold] = useState<PChangeTresholdProposal>({
+    treshold: "",
+  });
 
   //Proposal Change Owner
 
-  const [oldAddressOwner, setOldAddressOwner] = useState("");
-  const formattedOldAddressOwner: `0x${string}` = `0x${oldAddressOwner}`;
-  const [newOwnerChanged, setNewOwnerChanged] = useState("");
-  const formattedNewAddressOwner: `0x${string}` = `0x${newOwnerChanged}`;
+  const [changeOwnerProposal, setOwnerProposal] =
+    useState<PChangeOwnersProposal>({
+      addressOldOwner: "",
+      addressNewOwnerChanged: "",
+    });
 
   //Propose token transaction
 
-  const [addressToTokenTransaction, setAddressToTokenTransaction] =
-    useState("");
-  const formattedToAddressTokenTransaction: `0x${string}` = `0x${addressToTokenTransaction}`;
-  const [contractAddressToken, setContractAddressToken] = useState("");
-  const formattedContractAddressToken: `0x${string}` = `0x${contractAddressToken}`;
-  const [valueToken, setValueToken] = useState("");
+  const [tokenTransaction, setTokenTransaction] =
+    useState<PTokenTransactionProposal>({
+      addressToTokentransfer: "",
+      addressToken: "",
+      amountToken: "",
+    });
 
   //Propose NFT transaction
 
-  const [addressToNFTTransaction, setAddressToNFTTransaction] = useState("");
-  const formattedToAddressNFTTransaction: `0x${string}` = `0x${addressToNFTTransaction}`;
-  const [contractAddressNFT, setContractAddressNFT] = useState("");
-  const formattedContractAddressNFT: `0x${string}` = `0x${contractAddressNFT}`;
-  const [idToken, setIdToken] = useState("");
+  const [addressToNFTTransaction, setAddressToNFTTransaction] =
+    useState<PNFTTransactionProposal>({
+      addressToNFTtransfer: "",
+      addressNFT: "",
+      idNFT: "",
+    });
 
   //chiavi alchemy
   const alchemyApiKey = "z8b0aKqHNwhW3rp7JdoPv1_dUrOAW1dI";
@@ -78,10 +127,25 @@ export const CreateProposal = (props: IProposalType) => {
     formState: { errors },
   } = useForm({
     mode: "onSubmit",
-    defaultValues: props,
+    defaultValues: {
+      chooseType: chooseType.type,
+      addressTo: transactionProposal.addressTo,
+      amount: transactionProposal.amount,
+      newOwner: newOwner.newOwner,
+      removeOwner: removeOwner.removeOwner,
+      treshold: treshold.treshold,
+      addressOldOwner: changeOwnerProposal.addressOldOwner,
+      addressNewOwnerChanged: changeOwnerProposal.addressNewOwnerChanged,
+      addressToTokentransfer: tokenTransaction.addressToTokentransfer,
+      addressToken: tokenTransaction.addressToken,
+      amountToken: tokenTransaction.amountToken,
+      addressToNFTtransfer: addressToNFTTransaction.addressToNFTtransfer,
+      addressNFT: addressToNFTTransaction.addressNFT,
+      idNFT: addressToNFTTransaction.idNFT,
+    },
   });
 
-  const watchType = watch("ChooseType");
+  const watchType = watch("chooseType");
 
   //Propose Transaction 0
 
@@ -90,10 +154,10 @@ export const CreateProposal = (props: IProposalType) => {
     error: prepareErrorTransaction,
     isError: isPrepareErrorTransaction,
   } = usePrepareContractWrite({
-    address: address,
+    address: myAddress,
     abi: contractAbi,
     functionName: "proposeTransaction",
-    args: [addressTo, amount],
+    args: [transactionProposal.addressTo, parseInt(transactionProposal.amount)],
   });
 
   const {
@@ -115,10 +179,10 @@ export const CreateProposal = (props: IProposalType) => {
     error: prepareErrorNewOwner,
     isError: isPrepareErrorNewOwner,
   } = usePrepareContractWrite({
-    address: address,
+    address: myAddress,
     abi: contractAbi,
     functionName: "proposeNewOwner",
-    args: [newOwner],
+    args: [newOwner.newOwner],
   });
 
   const {
@@ -140,10 +204,10 @@ export const CreateProposal = (props: IProposalType) => {
     error: prepareErrorRemoveOwner,
     isError: isPrepareErrorRemoveOwner,
   } = usePrepareContractWrite({
-    address: address,
+    address: myAddress,
     abi: contractAbi,
     functionName: "proposeRemoveOwner",
-    args: [removeOwner],
+    args: [removeOwner.removeOwner],
   });
 
   const {
@@ -165,10 +229,10 @@ export const CreateProposal = (props: IProposalType) => {
     error: prepareErrorChangeTreshold,
     isError: isPrepareErrorChangeTreshold,
   } = usePrepareContractWrite({
-    address: contractAddress,
+    address: myAddress,
     abi: contractAbi,
     functionName: "proposeChangeThreshold",
-    args: [treshold],
+    args: [treshold.treshold],
   });
 
   const {
@@ -190,10 +254,13 @@ export const CreateProposal = (props: IProposalType) => {
     error: prepareErrorChangeOwner,
     isError: isPrepareErrorChangeOwner,
   } = usePrepareContractWrite({
-    address: contractAddress,
+    address: myAddress,
     abi: contractAbi,
     functionName: "proposeChangeOwner",
-    args: [formattedOldAddressOwner, formattedNewAddressOwner],
+    args: [
+      changeOwnerProposal.addressOldOwner,
+      changeOwnerProposal.addressNewOwnerChanged,
+    ],
   });
 
   const {
@@ -205,8 +272,8 @@ export const CreateProposal = (props: IProposalType) => {
   } = useContractWrite(configChangeOwner);
 
   function onSubmitChangeOwner() {
-    if (!writeForChangeTreshold) return;
-    writeForChangeTreshold();
+    if (!writeForChangeOwner) return;
+    writeForChangeOwner();
   }
 
   //Propose Token Transaction 5
@@ -215,13 +282,13 @@ export const CreateProposal = (props: IProposalType) => {
     error: prepareErrorTokenTransaction,
     isError: isPrepareErrorTokenTransaction,
   } = usePrepareContractWrite({
-    address: contractAddress,
+    address: myAddress,
     abi: contractAbi,
     functionName: "proposeTokenTransaction",
     args: [
-      formattedToAddressTokenTransaction,
-      formattedContractAddressToken,
-      valueToken,
+      tokenTransaction.addressToTokentransfer,
+      tokenTransaction.addressToken,
+      tokenTransaction.amountToken,
     ],
   });
 
@@ -244,13 +311,13 @@ export const CreateProposal = (props: IProposalType) => {
     error: prepareErrorNFTTransaction,
     isError: isPrepareErrorNFTTransaction,
   } = usePrepareContractWrite({
-    address: contractAddress,
+    address: myAddress,
     abi: contractAbi,
     functionName: "proposeNFTTransaction",
     args: [
-      formattedToAddressNFTTransaction,
-      formattedContractAddressNFT,
-      idToken,
+      addressToNFTTransaction.addressToNFTtransfer,
+      addressToNFTTransaction.addressNFT,
+      addressToNFTTransaction.idNFT,
     ],
   });
 
@@ -271,7 +338,7 @@ export const CreateProposal = (props: IProposalType) => {
     <div className="createProposal">
       <h1>Create Proposals</h1>
 
-      <p>Address nuovo contratto: {address}</p>
+      <p>Address nuovo contratto: {defaultInitialize.newWalletAddress}</p>
 
       <div className="row">
         <label className="queryInput" htmlFor="select">
@@ -280,12 +347,11 @@ export const CreateProposal = (props: IProposalType) => {
 
         <select
           className="selector"
-          {...register("ChooseType", {
+          {...register("chooseType", {
             required: { value: true, message: "Field required" },
-            
           })}
         >
-          
+          <option value="">Type</option>
           <option value="Transaction">Transaction</option>
           <option value="NewOwner">New Owner</option>
           <option value="RemoveOwner">Remove Owner</option>
@@ -303,18 +369,23 @@ export const CreateProposal = (props: IProposalType) => {
               <form>
                 <div className="row">
                   <label className="queryInput" htmlFor="owners">
-                    Insert address To:
+                    Insert addressTo:
                   </label>
 
                   <input
                     className="ProposalType"
                     id="Transaction"
-                    {...register("Transaction", {
+                    {...register("addressTo", {
                       required: { value: true, message: "Field required" },
                     })}
-                    onChange={(e) => setAddressTo(e.target.value)}
-                    value={addressTo}
-                    placeholder="To"
+                    onChange={(e) =>
+                      setTransactionProposal((transactionProposal) => ({
+                        ...transactionProposal,
+                        addressTo: e.target.value,
+                      }))
+                    }
+                    value={transactionProposal.addressTo}
+                    placeholder="Transaction"
                   />
                 </div>
 
@@ -326,11 +397,16 @@ export const CreateProposal = (props: IProposalType) => {
                   <input
                     className="input"
                     id="valueTransaction"
-                    {...register("Transaction", {
+                    {...register("amount", {
                       required: { value: true, message: "Field required" },
                     })}
-                    onChange={(e) => setAmount(e.target.value)}
-                    value={amount}
+                    onChange={(e) =>
+                      setTransactionProposal((transactionProposal) => ({
+                        ...transactionProposal,
+                        amount: e.target.value,
+                      }))
+                    }
+                    value={transactionProposal.amount}
                     placeholder="value-transaction"
                   />
                 </div>
@@ -372,11 +448,16 @@ export const CreateProposal = (props: IProposalType) => {
                   <input
                     className="ProposalType"
                     id="NewOwner"
-                    {...register("NewOwner", {
+                    {...register("newOwner", {
                       required: { value: true, message: "Field required" },
                     })}
-                    onChange={(e) => setNewOwner(e.target.value)}
-                    value={newOwner}
+                    onChange={(e) =>
+                      setNewOwner((newOwner) => ({
+                        ...newOwner,
+                        newOwner: e.target.value,
+                      }))
+                    }
+                    value={newOwner.newOwner}
                     placeholder="new owner"
                   />
                 </div>
@@ -416,11 +497,16 @@ export const CreateProposal = (props: IProposalType) => {
                   <input
                     className="ProposalType"
                     id="RemoveOwner"
-                    {...register("RemoveOwner", {
+                    {...register("removeOwner", {
                       required: { value: true, message: "Field required" },
                     })}
-                    onChange={(e) => setRemoveOwner(e.target.value)}
-                    value={removeOwner}
+                    onChange={(e) =>
+                      setRemoveOwner((removeOwner) => ({
+                        ...removeOwner,
+                        removeOwner: e.target.value,
+                      }))
+                    }
+                    value={removeOwner.removeOwner}
                     placeholder="address to remove owner"
                   />
                 </div>
@@ -462,11 +548,16 @@ export const CreateProposal = (props: IProposalType) => {
                   <input
                     className="ProposalType"
                     id="ChangeTreshold"
-                    {...register("ChangeThreshold", {
+                    {...register("treshold", {
                       required: { value: true, message: "Field required" },
                     })}
-                    onChange={(e) => setTreshold(e.target.value)}
-                    value={treshold}
+                    onChange={(e) =>
+                      setTreshold((treshold) => ({
+                        ...treshold,
+                        treshold: e.target.value,
+                      }))
+                    }
+                    value={treshold.treshold}
                     placeholder="number new treshold"
                   />
                 </div>
@@ -508,11 +599,16 @@ export const CreateProposal = (props: IProposalType) => {
                   <input
                     className="ProposalType"
                     id="ChangeOwner"
-                    {...register("ChangeOwner", {
+                    {...register("addressOldOwner", {
                       required: { value: true, message: "Field required" },
                     })}
-                    onChange={(e) => setOldAddressOwner(e.target.value)}
-                    value={oldAddressOwner}
+                    onChange={(e) =>
+                      setOwnerProposal((changeOwnerProposal) => ({
+                        ...changeOwnerProposal,
+                        addressOldOwner: e.target.value,
+                      }))
+                    }
+                    value={changeOwnerProposal.addressOldOwner}
                     placeholder="old owner address"
                   />
                 </div>
@@ -524,11 +620,16 @@ export const CreateProposal = (props: IProposalType) => {
                   <input
                     className="input"
                     id="ChangeOwner"
-                    {...register("ChangeOwner", {
+                    {...register("addressNewOwnerChanged", {
                       required: { value: true, message: "Field required" },
                     })}
-                    onChange={(e) => setNewOwnerChanged(e.target.value)}
-                    value={newOwnerChanged}
+                    onChange={(e) =>
+                      setOwnerProposal((changeOwnerProposal) => ({
+                        ...changeOwnerProposal,
+                        addressNewOwnerChanged: e.target.value,
+                      }))
+                    }
+                    value={changeOwnerProposal.addressNewOwnerChanged}
                     placeholder="new owner address"
                   />
                 </div>
@@ -538,9 +639,12 @@ export const CreateProposal = (props: IProposalType) => {
                     className="btn"
                     type="submit"
                     onClick={handleSubmit(onSubmitChangeOwner)}
-                    disabled={isCreateLoading || isCreateStarted}
-                    data-create-loading={isCreateLoading}
-                    data-create-started={isCreateStarted}
+                    disabled={
+                      isCreateChangeOwnerProposalLoading ||
+                      isCreateChangeOwnerProposal
+                    }
+                    data-create-loading={isCreateChangeOwnerProposalLoading}
+                    data-create-started={isCreateChangeOwnerProposal}
                   >
                     send proposal change owner
                   </button>
@@ -564,52 +668,65 @@ export const CreateProposal = (props: IProposalType) => {
               <form>
                 <div className="row">
                   <label className="queryInput" htmlFor="TokenTransaction">
-                    Insert token transaction
+                    Insert token transaction:
                   </label>
 
                   <input
                     className="ProposalType"
                     id="TokenTransaction"
-                    {...register("TokenTransaction", {
+                    {...register("addressToTokentransfer", {
                       required: { value: true, message: "Field required" },
                     })}
                     onChange={(e) =>
-                      setAddressToTokenTransaction(e.target.value)
+                      setTokenTransaction((tokenTransaction) => ({
+                        ...tokenTransaction,
+                        addressToTokentransfer: e.target.value,
+                      }))
                     }
-                    value={addressToTokenTransaction}
+                    value={tokenTransaction.addressToTokentransfer}
                     placeholder="address to send token"
                   />
                 </div>
                 <div className="row">
                   <label className="queryInput" htmlFor="TokenTransaction">
-                    Insert token contract address
+                    Insert token contract address:
                   </label>
 
                   <input
                     className="input"
                     id="TokenTransaction"
-                    {...register("TokenTransaction", {
+                    {...register("addressToken", {
                       required: { value: true, message: "Field required" },
                     })}
-                    onChange={(e) => setContractAddressToken(e.target.value)}
-                    value={contractAddressToken}
+                    onChange={(e) =>
+                      setTokenTransaction((tokenTransaction) => ({
+                        ...tokenTransaction,
+                        addressToken: e.target.value,
+                      }))
+                    }
+                    value={tokenTransaction.addressToken}
                     placeholder="contract address token"
                   />
                 </div>
 
                 <div className="row">
                   <label className="queryInput" htmlFor="TokenTransaction">
-                    Insert value send
+                    Insert value to send
                   </label>
 
                   <input
                     className="input"
                     id="TokenTransaction"
-                    {...register("TokenTransaction", {
+                    {...register("amountToken", {
                       required: { value: true, message: "Field required" },
                     })}
-                    onChange={(e) => setValueToken(e.target.value)}
-                    value={valueToken}
+                    onChange={(e) =>
+                      setTokenTransaction((tokenTransaction) => ({
+                        ...tokenTransaction,
+                        amountToken: e.target.value,
+                      }))
+                    }
+                    value={tokenTransaction.amountToken}
                     placeholder="amount token send"
                   />
                 </div>
@@ -619,11 +736,16 @@ export const CreateProposal = (props: IProposalType) => {
                     className="btn"
                     type="submit"
                     onClick={handleSubmit(onSubmitTokenTransaction)}
-                    disabled={isCreateLoading || isCreateStarted}
-                    data-create-loading={isCreateLoading}
-                    data-create-started={isCreateStarted}
+                    disabled={
+                      isCreateTokenTransactionProposal ||
+                      isCreateTokenTransactionProposalLoading
+                    }
+                    data-create-loading={
+                      isCreateTokenTransactionProposalLoading
+                    }
+                    data-create-started={isCreateTokenTransactionProposal}
                   >
-                    send proposal change owner
+                    send proposal for Token Transaction
                   </button>
                 </div>
 
@@ -651,11 +773,16 @@ export const CreateProposal = (props: IProposalType) => {
                   <input
                     className="ProposalType"
                     id="NFTTransaction"
-                    {...register("NFTTransaction", {
+                    {...register("addressToNFTtransfer", {
                       required: { value: true, message: "Field required" },
                     })}
-                    onChange={(e) => setAddressToNFTTransaction(e.target.value)}
-                    value={addressToNFTTransaction}
+                    onChange={(e) =>
+                      setAddressToNFTTransaction((addressToNFTTransaction) => ({
+                        ...addressToNFTTransaction,
+                        addressToNFTtransfer: e.target.value,
+                      }))
+                    }
+                    value={addressToNFTTransaction.addressToNFTtransfer}
                     placeholder="address to send token"
                   />
                 </div>
@@ -667,11 +794,16 @@ export const CreateProposal = (props: IProposalType) => {
                   <input
                     className="input"
                     id="NFTTransaction"
-                    {...register("NFTTransaction", {
+                    {...register("addressNFT", {
                       required: { value: true, message: "Field required" },
                     })}
-                    onChange={(e) => setContractAddressNFT(e.target.value)}
-                    value={contractAddressNFT}
+                    onChange={(e) =>
+                      setAddressToNFTTransaction((addressToNFTTransaction) => ({
+                        ...addressToNFTTransaction,
+                        addressNFT: e.target.value,
+                      }))
+                    }
+                    value={addressToNFTTransaction.addressNFT}
                     placeholder="contract address NFT"
                   />
                 </div>
@@ -684,11 +816,16 @@ export const CreateProposal = (props: IProposalType) => {
                   <input
                     className="input"
                     id="NFTTransaction"
-                    {...register("NFTTransaction", {
+                    {...register("idNFT", {
                       required: { value: true, message: "Field required" },
                     })}
-                    onChange={(e) => setIdToken(e.target.value)}
-                    value={idToken}
+                    onChange={(e) =>
+                      setAddressToNFTTransaction((addressToNFTTransaction) => ({
+                        ...addressToNFTTransaction,
+                        idNFT: e.target.value,
+                      }))
+                    }
+                    value={addressToNFTTransaction.idNFT}
                     placeholder="id NFT send"
                   />
                 </div>
