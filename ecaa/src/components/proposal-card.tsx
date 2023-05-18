@@ -16,6 +16,7 @@ export const ProposalCard = (props: Props) => {
   const fixedAddress = address as `0x${string}`;
   console.log(address);
 
+
   const { data: proposal }: { data?: IProposal } = useContractRead({
     address: fixedAddress,
     abi: contractAbi,
