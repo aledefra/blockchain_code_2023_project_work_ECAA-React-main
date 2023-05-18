@@ -86,14 +86,16 @@ export const CreateProposal = (props: IProposalType) => {
     treshold: "",
   });
 
+  console.log(treshold, "treshold")
+
   //Proposal Change Owner
 
-  const [changeOwnerProposal, setOwnerProposal] =
+  const [changeOwnerProposal, setChangeOwnerProposal] =
     useState<PChangeOwnersProposal>({
       addressOldOwner: "",
       addressNewOwnerChanged: "",
     });
-
+  console.log("Owner proposal", changeOwnerProposal.addressOldOwner, changeOwnerProposal.addressNewOwnerChanged)
   //Propose token transaction
 
   const [tokenTransaction, setTokenTransaction] =
@@ -275,6 +277,8 @@ export const CreateProposal = (props: IProposalType) => {
     if (!writeForChangeOwner) return;
     writeForChangeOwner();
   }
+
+  console.log(errorChangeOwner, prepareErrorChangeOwner, "ERRORI")
 
   //Propose Token Transaction 5
   const {
@@ -593,7 +597,7 @@ export const CreateProposal = (props: IProposalType) => {
               <form>
                 <div className="row">
                   <label className="queryInput" htmlFor="ChangeOwner">
-                    Insert old owner address
+                    Insert old owner address:
                   </label>
 
                   <input
@@ -603,7 +607,7 @@ export const CreateProposal = (props: IProposalType) => {
                       required: { value: true, message: "Field required" },
                     })}
                     onChange={(e) =>
-                      setOwnerProposal((changeOwnerProposal) => ({
+                      setChangeOwnerProposal((changeOwnerProposal) => ({
                         ...changeOwnerProposal,
                         addressOldOwner: e.target.value,
                       }))
@@ -624,7 +628,7 @@ export const CreateProposal = (props: IProposalType) => {
                       required: { value: true, message: "Field required" },
                     })}
                     onChange={(e) =>
-                      setOwnerProposal((changeOwnerProposal) => ({
+                      setChangeOwnerProposal((changeOwnerProposal) => ({
                         ...changeOwnerProposal,
                         addressNewOwnerChanged: e.target.value,
                       }))
