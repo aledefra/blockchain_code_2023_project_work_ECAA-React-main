@@ -9,7 +9,11 @@ function App() {
       <BrowserRouter>
       <Header />
       <div className="app-content">
-        <AppRoutes />
+        <div className="container bg-body-tertiary p-4 m-5">
+          <div className="">
+          <AppRoutes />
+          </div>
+        </div>
       </div>
       </BrowserRouter>
     </div>

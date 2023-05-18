@@ -13,7 +13,11 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
+<<<<<<< Updated upstream
 import { contractAbiMulti } from "../../contractABIs/proxycontract-abi";
+=======
+import { contractAbiMulti } from "../../contract-abi";
+>>>>>>> Stashed changes
 
 type PcreateWallet = {
   defaultValue: IInitialize;
@@ -76,6 +80,10 @@ export const CreateWallet = (props: PcreateWallet) => {
       parseInt(debouncedTreshold[0]),
     ],
     //args:[["0x4165279351bFA40e821ac16AeA60ed29d9c1Bb29", "0x63ce1ec5bf1163dc7dcf2c1d7f5d5f3d56c6fcbb"],1 , 1],
+<<<<<<< Updated upstream
+=======
+    
+>>>>>>> Stashed changes
   });
 
   const {
@@ -168,7 +176,11 @@ export const CreateWallet = (props: PcreateWallet) => {
             id="owners"
             {...register("owners", {
               required: { value: true, message: "Field required" },
+<<<<<<< Updated upstream
               //minLength: { value: 1, message: "Min 1 character allowed" },
+=======
+            //minLength: { value: 1, message: "Min 1 character allowed" },
+>>>>>>> Stashed changes
             })}
             onChange={(e) => setOwners(e.target.value)}
             value={owners}

@@ -2,20 +2,18 @@ import { Link } from "react-router-dom";
 
 export const Header = () => {
   return (
-    <div className="header">
-      <Link className="link" to="/">
-        {" "}
-        Homepage
-      </Link>
-      <Link className="link" to="/wallets">
-        {" "}
-        Multisig Wallet
-      </Link>
-      <Link className="link" to="/wallets/new">
-        {" "}
-        create Wallet
-      </Link>
-    
-    </div>
+    <nav className="navbar bg-body-tertiary">
+      <div className="container-fluid">
+        <Link className="navbar-brand" to="/">
+          Homepage
+        </Link>
+        <Link className="navbar-brand" to="/wallets">
+          Multisig Wallet
+        </Link>
+        <Link className="navbar-brand" to="/wallets/new">
+          create Wallet
+        </Link>
+      </div>
+    </nav>
   );
 };
