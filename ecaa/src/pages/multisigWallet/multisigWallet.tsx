@@ -12,83 +12,91 @@ import { ProposalCard } from "../../components/proposal-card";
 // const contractAddress = defaultInitialize.newWalletAddress as `0x${string}`;
 const alchemyApiKey = "z8b0aKqHNwhW3rp7JdoPv1_dUrOAW1dI";
 const provider = new ethers.providers.AlchemyProvider(
-  "maticmum",
-  alchemyApiKey
+	"maticmum",
+	alchemyApiKey
 );
 
 export const MultisigWallet = () => {
-  const [index, setIndex] = useState(0);
-  const params = useParams();
-  const address = params.address;
-  const navigate = useNavigate();
-  const contract = new ethers.Contract(
-    address as string,
-    contractAbi,
-    provider
-  );
+	const [index, setIndex] = useState(0);
+	const params = useParams();
+	const address = params.address;
+	const navigate = useNavigate();
+	const contract = new ethers.Contract(
+		address as string,
+		contractAbi,
+		provider
+	);
 
-  const {
-    data: addressBalance,
-    isError: balanceError,
-    isLoading: balanceLoading,
-  } = useBalance({
-    address: address as `0x${string}`,
-  });
+	const {
+		data: addressBalance,
+		isError: balanceError,
+		isLoading: balanceLoading,
+	} = useBalance({
+		address: address as `0x${string}`,
+	});
 
-  const { data: NumberOfProposal } = useContractRead({
-    address: address as `0x${string}`,
-    abi: contractAbi,
-    functionName: "getProposalsCount",
-  });
-  console.log("Data:", NumberOfProposal);
+	const { data: NumberOfProposal } = useContractRead({
+		address: address as `0x${string}`,
+		abi: contractAbi,
+		functionName: "getProposalsCount",
+	});
+	console.log("Data:", NumberOfProposal);
 
-  const numberofProposals = parseInt(NumberOfProposal as string);
+	const numberofProposals = parseInt(NumberOfProposal as string);
 
-  console.log("Number of proposals: ", numberofProposals);
+	console.log("Number of proposals: ", numberofProposals);
 
-  const proposalCards = [];
-  for (let i = 0; i < numberofProposals; i++) {
-    proposalCards.push(
-      <ProposalCard key={i} index={i} contractAbi={contractAbi} />
-    );
-  }
+	const proposalCards = [];
+	for (let i = 0; i < numberofProposals; i++) {
+		proposalCards.push(
+			<ProposalCard key={i} index={i} contractAbi={contractAbi} />
+		);
+	}
 
-  return (
-    <div className="MyMultisig">
-      <div>
-        {" "}
-        Multisig wallet Balance: {addressBalance?.value.toString()} matic
-      </div>
-      <div>
-        View multisig on{" "}
-        <a href={`https://mumbai.polygonscan.com/address/${address}`}>
-          Polygon Mumbai scan
+	return (
+		<div className="MyMultisig">
+			<h4>Multisig Wallet Balance:</h4>
+      <h1>{addressBalance?.value.toString()} MATIC</h1>
+
+      <div className="mb-3">
+        <a
+          className="btn btn-primary"
+          href={`https://mumbai.polygonscan.com/address/${address}`}
+          target="_blank"
+          rel="noreferrer"
+          >
+        View multisig on Polygon Mumbai Scan
         </a>
       </div>
-      <button
-        onClick={() => {
-          navigate(`/wallets/${address}/owners`);
-        }}
-      >
-        {" "}
-        Owners' settings{" "}
-      </button>
-      <button
-        onClick={() => {
-          navigate(`/wallets/${address}/proposals`);
-        }}
-      >
-        Create Proposal
-      </button>
-      {numberofProposals !== 0 && (
-        <div className="animals-list search-card ">
-          Proposals found:
-          {proposalCards}
-        </div>
-      )}
-      {numberofProposals === 0 && (
-        <p className="not-found"> No proposals found</p>
-      )}
-    </div>
-  );
+
+      <hr />
+
+			<button
+				className="btn btn-primary me-1"
+				onClick={() => {
+					navigate(`/wallets/${address}/owners`);
+				}}
+			>
+				Owners' settings
+			</button>
+			<button
+				className="btn btn-primary"
+				onClick={() => {
+					navigate(`/wallets/${address}/proposals`);
+				}}
+			>
+				Create Proposal
+			</button>
+
+			{numberofProposals !== 0 && (
+				<div>
+					<h2>Proposals:</h2>
+					{proposalCards}
+				</div>
+			)}
+			{numberofProposals === 0 && (
+				<p className="not-found"> No proposals found</p>
+			)}
+		</div>
+	);
 };

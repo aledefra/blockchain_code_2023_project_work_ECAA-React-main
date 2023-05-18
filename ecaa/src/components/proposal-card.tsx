@@ -174,11 +174,11 @@ const revokePrepare = usePrepareContractWrite({
 
 
   return (
-    <div className="proposal-card">
+    <div className="card p-3">
       <b>Index: {proposal?.index.toString()}</b>
-      <p>Executed: {proposal?.executed.toString()}</p>
-      <p>numConfirmations: {proposal?.numConfirmations.toString()}</p>
-      <p>ProposalType: {
+      <div>Executed: {proposal?.executed.toString()}</div>
+      <div>Number of confirmations: {proposal?.numConfirmations.toString()}</div>
+      <div>Proposal Type: {
         proposal?.proposalType === ProposalTypeEnum.Transaction ? "Transaction" :
         proposal?.proposalType === ProposalTypeEnum.NewOwner ? "New Owner" :
         proposal?.proposalType === ProposalTypeEnum.RemoveOwner ? "Remove Owner" :
@@ -188,14 +188,33 @@ const revokePrepare = usePrepareContractWrite({
         proposal?.proposalType === ProposalTypeEnum.TokenTransaction ? "Token Transaction" :
         proposal?.proposalType === ProposalTypeEnum.NFTTransaction ? "NFT Transaction" :
         "Unknown"}
-      </p>
-      DATA:
-      {decodedData()}
-      <p>proposalData: {proposal?.proposalData}</p>
+      </div>
+      <div>{decodedData()}</div>
+      Encoded proposal data: {proposal?.proposalData}
 
-      <button onClick={onSubmitConfirm}>Confirm</button>
-      <button onClick={onSubmitExecute}>Execute</button>
-      <button onClick={onSubmitRevoke}>Revoke</button>
+        <div>
+          {!proposal?.executed && 
+            <button
+              className="btn btn-success me-1"
+              onClick={onSubmitConfirm}
+            >Confirm</button>
+          }
+          
+          {!proposal?.executed && 
+            <button
+              className="btn btn-primary me-1"
+              onClick={onSubmitConfirm}
+            >Execute</button>
+          }
+          
+          {!proposal?.executed && 
+            <button
+              className="btn btn-danger me-1"
+              onClick={onSubmitConfirm}
+            >Revoke</button>
+          }
+        </div>
+
       {revokePrepare.isError && (
         <div>Error: {(revokePrepare.error as any).reason}</div>
       )}

@@ -340,15 +340,13 @@ export const CreateProposal = (props: IProposalType) => {
     <div className="createProposal">
       <h1>Create Proposals</h1>
 
-      <p>Address nuovo contratto: {defaultInitialize.newWalletAddress}</p>
-
       <div className="row">
         <label className="queryInput" htmlFor="select">
           Choose the type:
         </label>
 
         <select
-          className="selector"
+          className="selector form-control"
           {...register("chooseType", {
             required: { value: true, message: "Field required" },
           })}
@@ -375,7 +373,7 @@ export const CreateProposal = (props: IProposalType) => {
                   </label>
 
                   <input
-                    className="ProposalType"
+                    className="ProposalType form-control"
                     id="Transaction"
                     {...register("addressTo", {
                       required: { value: true, message: "Field required" },
@@ -397,7 +395,7 @@ export const CreateProposal = (props: IProposalType) => {
                   </label>
 
                   <input
-                    className="input"
+                    className="input form-control"
                     id="valueTransaction"
                     {...register("amount", {
                       required: { value: true, message: "Field required" },
@@ -415,7 +413,7 @@ export const CreateProposal = (props: IProposalType) => {
 
                 <div>
                   <button
-                    className="btn"
+                    className="btn btn-primary mt-2"
                     type="submit"
                     onClick={handleSubmit(onSubmitTransaction)}
                     disabled={isCreateLoading || isCreateStarted}
@@ -448,7 +446,7 @@ export const CreateProposal = (props: IProposalType) => {
                   </label>
 
                   <input
-                    className="ProposalType"
+                    className="ProposalType form-control"
                     id="NewOwner"
                     {...register("newOwner", {
                       required: { value: true, message: "Field required" },
@@ -466,7 +464,7 @@ export const CreateProposal = (props: IProposalType) => {
 
                 <div>
                   <button
-                    className="btn"
+                    className="btn btn-primary mt-2"
                     type="submit"
                     onClick={handleSubmit(onSubmitNewOwner)}
                     disabled={isCreateLoading || isCreateStarted}
@@ -497,7 +495,7 @@ export const CreateProposal = (props: IProposalType) => {
                   </label>
 
                   <input
-                    className="ProposalType"
+                    className="ProposalType form-control"
                     id="RemoveOwner"
                     {...register("removeOwner", {
                       required: { value: true, message: "Field required" },
@@ -515,7 +513,7 @@ export const CreateProposal = (props: IProposalType) => {
 
                 <div>
                   <button
-                    className="btn"
+                    className="btn btn-primary mt-2"
                     type="submit"
                     onClick={handleSubmit(onSubmitRemoveOwner)}
                     disabled={isCreateLoading || isCreateStarted}
@@ -548,7 +546,7 @@ export const CreateProposal = (props: IProposalType) => {
                   </label>
 
                   <input
-                    className="ProposalType"
+                    className="ProposalType form-control"
                     id="ChangeTreshold"
                     {...register("treshold", {
                       required: { value: true, message: "Field required" },
@@ -566,7 +564,7 @@ export const CreateProposal = (props: IProposalType) => {
 
                 <div>
                   <button
-                    className="btn"
+                    className="btn btn-primary mt-2"
                     type="submit"
                     onClick={handleSubmit(onSubmitChangeTreshold)}
                     disabled={isCreateLoading || isCreateStarted}
@@ -599,7 +597,7 @@ export const CreateProposal = (props: IProposalType) => {
                   </label>
 
                   <input
-                    className="ProposalType"
+                    className="ProposalType form-control"
                     id="ChangeOwner"
                     {...register("addressOldOwner", {
                       required: { value: true, message: "Field required" },
@@ -620,7 +618,7 @@ export const CreateProposal = (props: IProposalType) => {
                   </label>
 
                   <input
-                    className="input"
+                    className="input form-control"
                     id="ChangeOwner"
                     {...register("addressNewOwnerChanged", {
                       required: { value: true, message: "Field required" },
@@ -638,7 +636,7 @@ export const CreateProposal = (props: IProposalType) => {
 
                 <div>
                   <button
-                    className="btn"
+                    className="btn btn-primary mt-2"
                     type="submit"
                     onClick={handleSubmit(onSubmitChangeOwner)}
                     disabled={isCreateLoading || isCreateStarted}
@@ -671,7 +669,7 @@ export const CreateProposal = (props: IProposalType) => {
                   </label>
 
                   <input
-                    className="ProposalType"
+                    className="ProposalType form-control"
                     id="TokenTransaction"
                     {...register("addressToTokentransfer", {
                       required: { value: true, message: "Field required" },
@@ -692,7 +690,7 @@ export const CreateProposal = (props: IProposalType) => {
                   </label>
 
                   <input
-                    className="input"
+                    className="input form-control"
                     id="TokenTransaction"
                     {...register("addressToken", {
                       required: { value: true, message: "Field required" },
@@ -714,7 +712,7 @@ export const CreateProposal = (props: IProposalType) => {
                   </label>
 
                   <input
-                    className="input"
+                    className="input form-control"
                     id="TokenTransaction"
                     {...register("amountToken", {
                       required: { value: true, message: "Field required" },
@@ -732,7 +730,7 @@ export const CreateProposal = (props: IProposalType) => {
 
                 <div>
                   <button
-                    className="btn"
+                    className="btn btn-primary mt-2"
                     type="submit"
                     onClick={handleSubmit(onSubmitTokenTransaction)}
                     disabled={isCreateLoading || isCreateStarted}
@@ -765,7 +763,7 @@ export const CreateProposal = (props: IProposalType) => {
                   </label>
 
                   <input
-                    className="ProposalType"
+                    className="ProposalType form-control"
                     id="NFTTransaction"
                     {...register("addressToNFTtransfer", {
                       required: { value: true, message: "Field required" },
@@ -786,7 +784,7 @@ export const CreateProposal = (props: IProposalType) => {
                   </label>
 
                   <input
-                    className="input"
+                    className="input form-control"
                     id="NFTTransaction"
                     {...register("addressNFT", {
                       required: { value: true, message: "Field required" },
@@ -808,7 +806,7 @@ export const CreateProposal = (props: IProposalType) => {
                   </label>
 
                   <input
-                    className="input"
+                    className="input form-control"
                     id="NFTTransaction"
                     {...register("idNFT", {
                       required: { value: true, message: "Field required" },
@@ -826,7 +824,7 @@ export const CreateProposal = (props: IProposalType) => {
 
                 <div>
                   <button
-                    className="btn"
+                    className="btn btn-primary mt-2"
                     type="submit"
                     onClick={handleSubmit(onSubmitNFTtransaction)}
                     disabled={isCreateLoading || isCreateStarted}
