@@ -272,8 +272,8 @@ export const CreateProposal = (props: IProposalType) => {
   } = useContractWrite(configChangeOwner);
 
   function onSubmitChangeOwner() {
-    if (!writeForChangeTreshold) return;
-    writeForChangeTreshold();
+    if (!writeForChangeOwner) return;
+    writeForChangeOwner();
   }
 
   //Propose Token Transaction 5
