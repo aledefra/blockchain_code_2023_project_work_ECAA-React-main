@@ -1,6 +1,6 @@
 import { IProposal } from "../model/proposalType-model";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { useContractRead } from "wagmi";
+import { useContractRead, useContractWrite, usePrepareContractWrite } from "wagmi";
 
 type Props = {
   index: number;
@@ -24,7 +24,67 @@ export const ProposalCard = (props: Props) => {
     args: [`${index}`],
   });
 
-  console.log(proposal);
+    const {
+      config: prepareConfirmConfig,
+      error: errorPrepareConfirm,
+      isError,
+    } = usePrepareContractWrite({
+      address: fixedAddress,
+      abi: contractAbi,
+      functionName: "confirmProposal",
+      args: [`${proposal?.index}`],
+    });
+
+    const {
+      isSuccess,
+      isLoading, 
+      data: 
+      error,
+      write: writeConfirmProposal,
+    } = useContractWrite(prepareConfirmConfig);
+ function onSubmitConfirm() {
+   if (!writeConfirmProposal) return;
+   writeConfirmProposal();
+ }
+
+
+ const {
+   config: prepareExecuteConfig,
+   error: errorExecuteConfirm,
+   isError : isErrorExecute,
+ } = usePrepareContractWrite({
+   address: fixedAddress,
+   abi: contractAbi,
+   functionName: "executeProposal",
+   args: [`${proposal?.index}`],
+ });
+
+ const {
+   isSuccess : isSuccessExecute,
+   isLoading : isLoadingExecute,
+   data,
+   write: writeExecuteProposal,
+ } = useContractWrite(prepareExecuteConfig);
+ function onSubmitExecute() {
+   if (!writeExecuteProposal) return;
+   writeExecuteProposal();
+ }
+const revokePrepare = usePrepareContractWrite({
+   address: fixedAddress,
+   abi: contractAbi,
+   functionName: "revokeConfirmation",
+   args: [`${proposal?.index}`],
+ });
+
+ const revokeConfirmation = useContractWrite(revokePrepare.config);
+ function onSubmitRevoke() {
+   if (!revokeConfirmation.write) return;
+   revokeConfirmation.write();
+ }
+
+
+
+
 
   return (
     <div className="proposal-card">
@@ -34,9 +94,15 @@ export const ProposalCard = (props: Props) => {
       <p>ProposalType: {proposal?.proposalType}</p>
       <p>proposalData: {proposal?.proposalData}</p>
 
-      <Link to={`/proposals/${proposal?.index}`} state={proposal}>
-        <button>Details</button>
-      </Link>
+      <button onClick={onSubmitConfirm}>Confirm</button>
+      <button onClick={onSubmitExecute}>Execute</button>
+      <button onClick={onSubmitRevoke}>Revoke</button>
+      {revokePrepare.isError && (
+        <div>Error: {(revokePrepare.error as any).reason}</div>
+      )}
+      {revokeConfirmation.isError && (
+        <div>Error: {(revokeConfirmation.error as any).reason}</div>
+      )}
     </div>
   );
 };
