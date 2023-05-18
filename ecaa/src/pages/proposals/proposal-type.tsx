@@ -276,6 +276,8 @@ export const CreateProposal = (props: IProposalType) => {
     writeForChangeOwner();
   }
 
+  console.log("aaaaaa")
+
   //Propose Token Transaction 5
   const {
     config: configTokenTransaction,

@@ -15,7 +15,7 @@ export interface IProposal {
     executed: boolean,
     numConfirmations: number,
     proposalType: number,
-    proposalData: number
+    proposalData: string
 }
 
 
