@@ -1,10 +1,3 @@
-<<<<<<< Updated upstream
-import { useContractRead, useBalance } from "wagmi";
-import { useParams } from "react-router-dom";
-import { contractAbi } from "../../contractABIs/multisigABI";
-import { ProposalCard } from "../../components/proposal-card";
-
-=======
 import { ethers } from "ethers";
 import { useState } from "react";
 import { useAccount, useBalance } from "wagmi";
@@ -23,34 +16,35 @@ const provider = new ethers.providers.AlchemyProvider(
   alchemyApiKey
 );
 
-
->>>>>>> Stashed changes
 export const MultisigWallet = () => {
   const [index, setIndex] = useState(0);
   const params = useParams();
   const address = params.address;
   const navigate = useNavigate();
-  const contract = new ethers.Contract(address as string, contractAbi, provider);
+  const contract = new ethers.Contract(
+    address as string,
+    contractAbi,
+    provider
+  );
 
- const {
-   data: addressBalance,
-   isError: balanceError,
-   isLoading: balanceLoading,
- } = useBalance({
-   address: address as  `0x${string}`,
- });
+  const {
+    data: addressBalance,
+    isError: balanceError,
+    isLoading: balanceLoading,
+  } = useBalance({
+    address: address as `0x${string}`,
+  });
 
   const { data: NumberOfProposal } = useContractRead({
     address: address as `0x${string}`,
     abi: contractAbi,
     functionName: "getProposalsCount",
   });
-  console.log("Data:", NumberOfProposal)
+  console.log("Data:", NumberOfProposal);
 
   const numberofProposals = parseInt(NumberOfProposal as string);
 
   console.log("Number of proposals: ", numberofProposals);
-
 
   const proposalCards = [];
   for (let i = 0; i < numberofProposals; i++) {
