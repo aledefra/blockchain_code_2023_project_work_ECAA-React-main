@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { contractAbiMulti } from "../../contract-abi";
+import { _alchemyKey } from "../../utils/key";
 
 type PcreateWallet = {
   defaultValue: IInitialize;
@@ -52,7 +53,7 @@ export const CreateWallet = (props: PcreateWallet) => {
   });
 
   //preparo il contratto
-  const alchemyApiKey = "z8b0aKqHNwhW3rp7JdoPv1_dUrOAW1dI";
+  const alchemyApiKey = _alchemyKey;
   const provider = new ethers.providers.AlchemyProvider(
     "maticmum",
     alchemyApiKey

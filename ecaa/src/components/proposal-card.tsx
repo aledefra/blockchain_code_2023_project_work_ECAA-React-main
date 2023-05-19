@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { IProposal } from "../model/proposalType-model";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useContractRead, useContractWrite, usePrepareContractWrite } from "wagmi";
+import { _alchemyKey } from "../utils/key";
 
 type Props = {
   index: number;
@@ -28,12 +29,18 @@ export const ProposalCard = (props: Props) => {
   const address = params.address;
   const fixedAddress = address as `0x${string}`;
 
+
+
+
   const { data: proposal }: { data?: IProposal } = useContractRead({
     address: fixedAddress,
     abi: contractAbi,
     functionName: "proposals",
     args: [`${index}`],
   });
+
+
+// confirme proposal
 
     const {
       config: prepareConfirmConfig,
@@ -47,10 +54,10 @@ export const ProposalCard = (props: Props) => {
     });
 
     const {
-      isSuccess,
-      isLoading, 
-      data: 
-      error,
+      isSuccess: isSuccessConfirm,
+      isLoading: isLoadingConfirm, 
+      data: dataConfirm,
+      error: errorConfirm,
       write: writeConfirmProposal,
     } = useContractWrite(prepareConfirmConfig);
  function onSubmitConfirm() {
@@ -58,6 +65,8 @@ export const ProposalCard = (props: Props) => {
    writeConfirmProposal();
  }
 
+
+// execute proposal
 
  const {
    config: prepareExecuteConfig,
@@ -95,7 +104,7 @@ const revokePrepare = usePrepareContractWrite({
 
 
 
-
+//decode proposal data
 
   const decodedData = () => {
     
@@ -193,17 +202,17 @@ const revokePrepare = usePrepareContractWrite({
       Encoded proposal data: {proposal?.proposalData}
 
         <div>
-          {!proposal?.executed && 
+          { 
             <button
               className="btn btn-success me-1"
               onClick={onSubmitConfirm}
             >Confirm</button>
           }
           
-          {!proposal?.executed && 
+          {
             <button
               className="btn btn-primary me-1"
-              onClick={writeExecuteProposal}
+              onClick={onSubmitExecute}
             >Execute</button>
           }
           

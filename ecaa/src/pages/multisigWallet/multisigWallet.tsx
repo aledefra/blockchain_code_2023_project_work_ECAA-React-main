@@ -8,9 +8,10 @@ import { useLocation, useParams } from "react-router-dom";
 import { contractAbi } from "../../contractABIs/multisigABI";
 
 import { ProposalCard } from "../../components/proposal-card";
+import { _alchemyKey } from "../../utils/key";
 
 // const contractAddress = defaultInitialize.newWalletAddress as `0x${string}`;
-const alchemyApiKey = "z8b0aKqHNwhW3rp7JdoPv1_dUrOAW1dI";
+const alchemyApiKey = _alchemyKey;
 const provider = new ethers.providers.AlchemyProvider(
 	"maticmum",
 	alchemyApiKey

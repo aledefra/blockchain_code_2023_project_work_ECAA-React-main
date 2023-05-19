@@ -5,12 +5,13 @@ import { useContractRead } from "wagmi";
 import { defaultInitialize } from "../../utils/createWallet";
 import { useLocation, useNavigate } from "react-router-dom";
 import { contractAbiMulti } from "../../contract-abi";
+import { _alchemyKey } from "../../utils/key";
 
 const contractAddress = defaultInitialize.newWalletAddress;
 
 const contractAbi = contractAbiMulti;
 
-const alchemyApiKey = "z8b0aKqHNwhW3rp7JdoPv1_dUrOAW1dI";
+const alchemyApiKey = _alchemyKey;
 
 export type SavedContract = {
 	address: string;
