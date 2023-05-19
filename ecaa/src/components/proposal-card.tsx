@@ -203,14 +203,14 @@ const revokePrepare = usePrepareContractWrite({
           {!proposal?.executed && 
             <button
               className="btn btn-primary me-1"
-              onClick={onSubmitConfirm}
+              onClick={writeExecuteProposal}
             >Execute</button>
           }
           
           {!proposal?.executed && 
             <button
               className="btn btn-danger me-1"
-              onClick={onSubmitConfirm}
+              onClick={onSubmitRevoke}
             >Revoke</button>
           }
         </div>

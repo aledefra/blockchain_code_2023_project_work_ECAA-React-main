@@ -29,6 +29,9 @@ export const CreateProposal = (props: IProposalType) => {
   type PChangeTresholdProposal = {
     treshold: string;
   };
+  type PChangeNumConfirmationsProposal = {
+    numConfirmations: string;
+  };
 
   type PChangeOwnersProposal = {
     addressOldOwner: string;
@@ -58,7 +61,7 @@ export const CreateProposal = (props: IProposalType) => {
   console.log("questo è il selected address", selectedAddress.toString());
 
   const [chooseType, setChoseType] = useState<PChooseTypeProposal>({
-    type: 0 || 1 || 2 || 3 || 4 || 5 || 6,
+    type: 0 || 1 || 2 || 3 || 4 || 5 || 6 || 7,
   });
 
   //Proposal Transaction 0
@@ -86,7 +89,13 @@ export const CreateProposal = (props: IProposalType) => {
     treshold: "",
   });
 
-  //Proposal Change Owner
+  //Proposal Change Num Confirmations 4
+
+  const [numConfirmations, setNumConfirmations] = useState<PChangeNumConfirmationsProposal>({
+    numConfirmations: "",
+  });
+
+  //Proposal Change Owner 5
 
   const [changeOwnerProposal, setOwnerProposal] =
     useState<PChangeOwnersProposal>({
@@ -94,7 +103,7 @@ export const CreateProposal = (props: IProposalType) => {
       addressNewOwnerChanged: "",
     });
 
-  //Propose token transaction
+  //Propose token transaction 6
 
   const [tokenTransaction, setTokenTransaction] =
     useState<PTokenTransactionProposal>({
@@ -103,7 +112,7 @@ export const CreateProposal = (props: IProposalType) => {
       amountToken: "",
     });
 
-  //Propose NFT transaction
+  //Propose NFT transaction 7
 
   const [addressToNFTTransaction, setAddressToNFTTransaction] =
     useState<PNFTTransactionProposal>({
@@ -134,6 +143,7 @@ export const CreateProposal = (props: IProposalType) => {
       newOwner: newOwner.newOwner,
       removeOwner: removeOwner.removeOwner,
       treshold: treshold.treshold,
+      numConfirmations: numConfirmations.numConfirmations,
       addressOldOwner: changeOwnerProposal.addressOldOwner,
       addressNewOwnerChanged: changeOwnerProposal.addressNewOwnerChanged,
       addressToTokentransfer: tokenTransaction.addressToTokentransfer,
@@ -161,8 +171,8 @@ export const CreateProposal = (props: IProposalType) => {
   });
 
   const {
-    isSuccess: isCreateStarted,
-    isLoading: isCreateLoading,
+    isSuccess: isCreateStartedTransaction,
+    isLoading: isCreateLoadingTransaction,
     data: dataTransaction,
     error,
     write: writeTransaction,
@@ -248,7 +258,32 @@ export const CreateProposal = (props: IProposalType) => {
     writeForChangeTreshold();
   }
 
-  //Propose Change Owner 4
+  //Propose Change num Confirmations 4
+  const {
+    config: configChangeNumConfirmations,
+    error: prepareErrorChangeNumConfirmations,
+    isError: isPrepareErrorChangeNumConfirmations,
+  } = usePrepareContractWrite({
+    address: myAddress,
+    abi: contractAbi,
+    functionName: "proposeChangeNumConfirmations",
+    args: [numConfirmations.numConfirmations],
+  });
+
+  const {
+    isSuccess: isCreateChangeNumConfirmationsProposal,
+    isLoading: isCreateChangeNumConfirmationsProposalLoading,
+    data: dataProposalChangeNumConfirmations,
+    error: errorChangeNumConfirmations,
+    write: writeForChangeNumConfirmations,
+  } = useContractWrite(configChangeNumConfirmations);
+
+  function onSubmitChangeNumConfirmations() {
+    if (!writeForChangeNumConfirmations) return;
+    writeForChangeNumConfirmations();
+  }
+
+  //Propose Change Owner 5
   const {
     config: configChangeOwner,
     error: prepareErrorChangeOwner,
@@ -278,7 +313,7 @@ export const CreateProposal = (props: IProposalType) => {
 
   console.log("aaaaaa")
 
-  //Propose Token Transaction 5
+  //Propose Token Transaction 6
   const {
     config: configTokenTransaction,
     error: prepareErrorTokenTransaction,
@@ -307,7 +342,7 @@ export const CreateProposal = (props: IProposalType) => {
     writeForTokenTransaction();
   }
 
-  //Propose NFT Transaction 6
+  //Propose NFT Transaction 7
   const {
     config: configNFTTransaction,
     error: prepareErrorNFTTransaction,
@@ -356,6 +391,7 @@ export const CreateProposal = (props: IProposalType) => {
           <option value="NewOwner">New Owner</option>
           <option value="RemoveOwner">Remove Owner</option>
           <option value="ChangeTreshold">ChangeTreshold</option>
+          <option value="ChangeNumConfirmations">Change Num Confirmations</option>
           <option value="ChangeOwner">Change Owner</option>
           <option value="TokenTransaction">Token ERC20 transaction</option>
           <option value="NFTTransaction">NFT transaction</option>
@@ -416,11 +452,11 @@ export const CreateProposal = (props: IProposalType) => {
                     className="btn btn-primary mt-2"
                     type="submit"
                     onClick={handleSubmit(onSubmitTransaction)}
-                    disabled={isCreateLoading || isCreateStarted}
-                    data-create-loading={isCreateLoading}
-                    data-create-started={isCreateStarted}
+                    disabled={isCreateLoadingTransaction || isCreateStartedTransaction}
+                    data-create-loading={isCreateLoadingTransaction}
+                    data-create-started={isCreateStartedTransaction}
                   >
-                    sendProposalTransaction
+                    Send
                   </button>
                 </div>
 
@@ -467,11 +503,11 @@ export const CreateProposal = (props: IProposalType) => {
                     className="btn btn-primary mt-2"
                     type="submit"
                     onClick={handleSubmit(onSubmitNewOwner)}
-                    disabled={isCreateLoading || isCreateStarted}
-                    data-create-loading={isCreateLoading}
-                    data-create-started={isCreateStarted}
+                    disabled={isCreateNewOwnerProposalLoading || isCreateNewOwnerProposal}
+                    data-create-loading={isCreateNewOwnerProposalLoading}
+                    data-create-started={isCreateNewOwnerProposal}
                   >
-                    sendProposalNewOwner
+                    Send
                   </button>
                 </div>
 
@@ -491,7 +527,7 @@ export const CreateProposal = (props: IProposalType) => {
               <form>
                 <div className="row">
                   <label className="queryInput" htmlFor="Removeowner">
-                    Insert address address to delete owner:
+                    Insert owner address to remove:
                   </label>
 
                   <input
@@ -516,11 +552,11 @@ export const CreateProposal = (props: IProposalType) => {
                     className="btn btn-primary mt-2"
                     type="submit"
                     onClick={handleSubmit(onSubmitRemoveOwner)}
-                    disabled={isCreateLoading || isCreateStarted}
-                    data-create-loading={isCreateLoading}
-                    data-create-started={isCreateStarted}
+                    disabled={isCreateRemoveOwnerProposalLoading || isCreateRemoveOwnerProposal}
+                    data-create-loading={isCreateRemoveOwnerProposalLoading}
+                    data-create-started={isCreateRemoveOwnerProposal}
                   >
-                    sendProposalNewOwner
+                    Send
                   </button>
                 </div>
 
@@ -567,11 +603,11 @@ export const CreateProposal = (props: IProposalType) => {
                     className="btn btn-primary mt-2"
                     type="submit"
                     onClick={handleSubmit(onSubmitChangeTreshold)}
-                    disabled={isCreateLoading || isCreateStarted}
-                    data-create-loading={isCreateLoading}
-                    data-create-started={isCreateStarted}
+                    disabled={isCreateChangeTresholdProposalLoading || isCreateChangeTresholdProposal}
+                    data-create-loading={isCreateChangeTresholdProposalLoading}
+                    data-create-started={isCreateChangeTresholdProposal}
                   >
-                    send new Treshold
+                    Send
                   </button>
                 </div>
 
@@ -586,6 +622,59 @@ export const CreateProposal = (props: IProposalType) => {
         </div>
       )}
 
+{watchType && (
+        <div className="row">
+          {watchType.toString() === "ChangeNumConfirmations" && (
+            <>
+              <form>
+                <div className="row">
+                  <label className="queryInput" htmlFor="ChangeNumConfirmations">
+                    Insert new number of confirmations required:
+                  </label>
+
+                  <input
+                    className="ProposalType form-control"
+                    id="ChangeNumConfirmations"
+                    {...register("numConfirmations", {
+                      required: { value: true, message: "Field required" },
+                    })}
+                    onChange={(e) =>
+                      setNumConfirmations((numConfirmations) => ({
+                        ...numConfirmations,
+                        numConfirmations: e.target.value,
+                      }))
+                    }
+                    value={numConfirmations.numConfirmations}
+                    placeholder="number new treshold"
+                  />
+                </div>
+
+                <div>
+                  <button
+                    className="btn btn-primary mt-2"
+                    type="submit"
+                    onClick={handleSubmit(onSubmitChangeNumConfirmations)}
+                    disabled={isCreateChangeNumConfirmationsProposalLoading || isCreateChangeNumConfirmationsProposal}
+                    data-create-loading={isCreateChangeNumConfirmationsProposalLoading}
+                    data-create-started={isCreateChangeNumConfirmationsProposal}
+                  >
+                    Send
+                  </button>
+                </div>
+
+                {(isPrepareErrorChangeTreshold || error) && (
+                  <div>
+                    Error: {(prepareErrorChangeTreshold || error)?.message}
+                  </div>
+                )}
+              </form>
+            </>
+          )}
+        </div>
+      )}
+
+
+
       {watchType && (
         <div className="row">
           {watchType.toString() === "ChangeOwner" && (
@@ -593,7 +682,7 @@ export const CreateProposal = (props: IProposalType) => {
               <form>
                 <div className="row">
                   <label className="queryInput" htmlFor="ChangeOwner">
-                    Insert old owner address
+                    Insert old owner address to change:
                   </label>
 
                   <input
@@ -614,7 +703,7 @@ export const CreateProposal = (props: IProposalType) => {
                 </div>
                 <div className="row">
                   <label className="queryInput" htmlFor="ChangeOwner">
-                    Insert new owner address:
+                    Insert new owner address to add:
                   </label>
 
                   <input
@@ -639,11 +728,11 @@ export const CreateProposal = (props: IProposalType) => {
                     className="btn btn-primary mt-2"
                     type="submit"
                     onClick={handleSubmit(onSubmitChangeOwner)}
-                    disabled={isCreateLoading || isCreateStarted}
-                    data-create-loading={isCreateLoading}
-                    data-create-started={isCreateStarted}
+                    disabled={isCreateChangeOwnerProposalLoading || isCreateChangeOwnerProposal}
+                    data-create-loading={isCreateChangeOwnerProposalLoading}
+                    data-create-started={isCreateChangeOwnerProposal}
                   >
-                    send proposal change owner
+                    Send
                   </button>
                 </div>
 
@@ -665,7 +754,7 @@ export const CreateProposal = (props: IProposalType) => {
               <form>
                 <div className="row">
                   <label className="queryInput" htmlFor="TokenTransaction">
-                    Insert token transaction:
+                    Insert recive address ERC-20 token:
                   </label>
 
                   <input
@@ -686,7 +775,7 @@ export const CreateProposal = (props: IProposalType) => {
                 </div>
                 <div className="row">
                   <label className="queryInput" htmlFor="TokenTransaction">
-                    Insert token contract address:
+                    Insert token ERC-20 contract address:
                   </label>
 
                   <input
@@ -708,7 +797,7 @@ export const CreateProposal = (props: IProposalType) => {
 
                 <div className="row">
                   <label className="queryInput" htmlFor="TokenTransaction">
-                    Insert value send
+                    Insert send amount:
                   </label>
 
                   <input
@@ -733,11 +822,11 @@ export const CreateProposal = (props: IProposalType) => {
                     className="btn btn-primary mt-2"
                     type="submit"
                     onClick={handleSubmit(onSubmitTokenTransaction)}
-                    disabled={isCreateLoading || isCreateStarted}
-                    data-create-loading={isCreateLoading}
-                    data-create-started={isCreateStarted}
+                    disabled={isCreateTokenTransactionProposalLoading || isCreateTokenTransactionProposal}
+                    data-create-loading={isCreateTokenTransactionProposalLoading}
+                    data-create-started={isCreateTokenTransactionProposal}
                   >
-                    send proposal change owner
+                    Send
                   </button>
                 </div>
 
@@ -759,7 +848,7 @@ export const CreateProposal = (props: IProposalType) => {
               <form>
                 <div className="row">
                   <label className="queryInput" htmlFor="NFTTransaction">
-                    Insert NFT transaction
+                    Insert recive address NFT:
                   </label>
 
                   <input
@@ -780,7 +869,7 @@ export const CreateProposal = (props: IProposalType) => {
                 </div>
                 <div className="row">
                   <label className="queryInput" htmlFor="NFTTransaction">
-                    Insert NFT contract address
+                    Insert NFT contract address:
                   </label>
 
                   <input
@@ -802,7 +891,7 @@ export const CreateProposal = (props: IProposalType) => {
 
                 <div className="row">
                   <label className="queryInput" htmlFor="NFTTransaction">
-                    Insert id NFT
+                    Insert id NFT:
                   </label>
 
                   <input
@@ -827,11 +916,11 @@ export const CreateProposal = (props: IProposalType) => {
                     className="btn btn-primary mt-2"
                     type="submit"
                     onClick={handleSubmit(onSubmitNFTtransaction)}
-                    disabled={isCreateLoading || isCreateStarted}
-                    data-create-loading={isCreateLoading}
-                    data-create-started={isCreateStarted}
+                    disabled={isCreateNFTTransactionProposalLoading || isCreateNFTTransactionProposal}
+                    data-create-loading={isCreateNFTTransactionProposalLoading}
+                    data-create-started={isCreateNFTTransactionProposal}
                   >
-                    send proposal change owner
+                    Send
                   </button>
                 </div>
 
