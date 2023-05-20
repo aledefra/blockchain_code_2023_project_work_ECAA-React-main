@@ -20,12 +20,13 @@ type PcreateWallet = {
   defaultValue: IInitialize;
 };
 
+
 const contractAbi = contractAbiMulti;
 
 const contractAddress = "0x06a9FAD3C4CECb75AC5c2Dc96aEbb298318826bc";
 
+
 export const CreateWallet = (props: PcreateWallet) => {
-  
   const [owners, setOwners] = useState("");
   const [confirmations, setConfirmations] = useState("");
   const [treshold, setTreshold] = useState("");
@@ -128,6 +129,27 @@ export const CreateWallet = (props: PcreateWallet) => {
     }
   }, [newWalletAddress]);
 
+  
+//da valutare se può essere utile per passare il numero di conferme da raggiungere
+  type PnumConfirmationsRequiredtoExecute = {
+      _confirmation: string;  
+      };
+
+  const [numConfirmationsRequiredtoExecute, setNumConfirmationsRequiredtoExecute] = useState<PnumConfirmationsRequiredtoExecute>({
+    _confirmation: "",
+  });
+  
+  console.log("numConfirmationsRequiredtoExecute", numConfirmationsRequiredtoExecute)
+  useEffect(() => {
+    if (isCreateStarted) {
+  setNumConfirmationsRequiredtoExecute({
+    _confirmation: confirmations,
+  })
+    }
+  }, [isCreateStarted]);
+  
+
+  
 
 
   return (

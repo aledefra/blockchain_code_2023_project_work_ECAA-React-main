@@ -1,9 +1,10 @@
 import { ethers } from "ethers";
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { IProposal } from "../model/proposalType-model";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useContractRead, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { _alchemyKey } from "../utils/key";
+
 
 type Props = {
   index: number;
@@ -21,15 +22,17 @@ enum ProposalTypeEnum {
   NFTTransaction
 }
 
+
 export const ProposalCard = (props: Props) => {
   const index = props.index;
   const contractAbi = props.contractAbi;
-  const location = useLocation();
   const params = useParams();
   const address = params.address;
   const fixedAddress = address as `0x${string}`;
+ 
 
-
+  //prova reload
+  const [isExecuted, setIsExecuted] = useState(false);
 
 
   const { data: proposal }: { data?: IProposal } = useContractRead({
@@ -54,7 +57,7 @@ export const ProposalCard = (props: Props) => {
     });
 
     const {
-      isSuccess: isSuccessConfirm,
+      isSuccess: isSuccessStartedConfirm,
       isLoading: isLoadingConfirm, 
       data: dataConfirm,
       error: errorConfirm,
@@ -63,14 +66,16 @@ export const ProposalCard = (props: Props) => {
  function onSubmitConfirm() {
    if (!writeConfirmProposal) return;
    writeConfirmProposal();
+
  }
+
 
 
 // execute proposal
 
  const {
    config: prepareExecuteConfig,
-   error: errorExecuteConfirm,
+   error: errorExecutePrepare,
    isError : isErrorExecute,
  } = usePrepareContractWrite({
    address: fixedAddress,
@@ -80,27 +85,178 @@ export const ProposalCard = (props: Props) => {
  });
 
  const {
-   isSuccess : isSuccessExecute,
+   isSuccess : isSuccessStartedExecute,
    isLoading : isLoadingExecute,
    data,
+   error: writeErrorExecute,
    write: writeExecuteProposal,
  } = useContractWrite(prepareExecuteConfig);
  function onSubmitExecute() {
    if (!writeExecuteProposal) return;
    writeExecuteProposal();
+
  }
-const revokePrepare = usePrepareContractWrite({
+
+ // revoke proposal
+ const {
+    config: prepareRevokeConfig,
+    error: errorRevokePrepare,
+    isError: isErrorRevoke,
+ } = usePrepareContractWrite({
    address: fixedAddress,
    abi: contractAbi,
    functionName: "revokeConfirmation",
    args: [`${proposal?.index}`],
  });
+ const {
+  isSuccess : isSuccessStartedRevoke,
+  isLoading : isLoadingRevoke,
+  data : dataRevoke,
+  error: writeErrorRevoke,
+  write: writeRevoke,
+} = useContractWrite(prepareRevokeConfig);
+function onSubmitRevoke() {
+  if (!writeRevoke) return;
+  writeRevoke();
 
- const revokeConfirmation = useContractWrite(revokePrepare.config);
- function onSubmitRevoke() {
-   if (!revokeConfirmation.write) return;
-   revokeConfirmation.write();
- }
+}
+
+//function ImHere
+const {
+  config: prepareImHereConfig,
+  error: errorImHerePrepare,
+  isError : isErrorImHere,
+} = usePrepareContractWrite({
+  address: fixedAddress,
+  abi: contractAbi,
+  functionName: "imAmHere",
+  args: [`${proposal?.index}`],
+});
+
+const {
+  isSuccess: isSuccessStartedImHere,
+  isLoading: isLoadingImHere,
+  data: dataImHere,
+  error: errorImHere,
+  write: writeImHere,
+} = useContractWrite(prepareImHereConfig);
+function onSubmitImHere() {
+if (!writeImHere) return;
+writeImHere();
+
+}
+
+
+
+// prova reload CONFIRM 
+
+useEffect(() => {
+  let timerId: NodeJS.Timeout;
+
+  if (isSuccessStartedConfirm) {
+    timerId = setTimeout(() => {
+      setIsExecuted(true);
+    }, 5000); 
+  }
+
+  return () => {
+    clearTimeout(timerId);
+  };
+}, [isSuccessStartedConfirm]);
+
+useEffect(() => {
+  const reloadPage = () => {
+    window.location.reload();
+  };
+
+  if (isExecuted) {
+    reloadPage();
+  }
+}, [isExecuted]);
+
+
+
+// prova reload EXECUTE
+useEffect(() => {
+  let timerId: NodeJS.Timeout;
+
+  if (isSuccessStartedExecute) {
+    timerId = setTimeout(() => {
+      setIsExecuted(true);
+    }, 5000); 
+  }
+
+  return () => {
+    clearTimeout(timerId);
+  };
+}, [isSuccessStartedExecute]);
+
+useEffect(() => {
+  const reloadPage = () => {
+    window.location.reload();
+  };
+
+  if (isExecuted) {
+    reloadPage();
+  }
+}, [isExecuted]);
+
+
+
+// prova reload REVOKE
+
+useEffect(() => {
+  let timerId: NodeJS.Timeout;
+
+  if (isSuccessStartedRevoke) {
+    timerId = setTimeout(() => {
+      setIsExecuted(true);
+    }, 5000); 
+  }
+
+  return () => {
+    clearTimeout(timerId);
+  };
+}, [isSuccessStartedRevoke]);
+
+useEffect(() => {
+  const reloadPage = () => {
+    window.location.reload();
+  };
+
+  if (isExecuted) {
+    
+    reloadPage();
+    
+  }
+}, [isExecuted]);
+
+
+
+//PROVA RELOAD IMHERE
+useEffect(() => {
+  let timerId: NodeJS.Timeout;
+
+  if (isSuccessStartedImHere) {
+    timerId = setTimeout(() => {
+      setIsExecuted(true);
+    }, 5000); 
+  }
+
+  return () => {
+    clearTimeout(timerId);
+  };
+}, [isSuccessStartedImHere]);
+
+useEffect(() => {
+  const reloadPage = () => {
+    window.location.reload();
+  };
+
+  if (isExecuted) {
+    reloadPage();
+  }
+}, [isExecuted]);
 
 
 
@@ -180,7 +336,7 @@ const revokePrepare = usePrepareContractWrite({
 
     return <p>Unknown Proposal Type</p>
   }
-
+ 
 
   return (
     <div className="card p-3">
@@ -201,35 +357,105 @@ const revokePrepare = usePrepareContractWrite({
       <div>{decodedData()}</div>
       Encoded proposal data: {proposal?.proposalData}
 
-        <div>
-          { 
-            <button
-              className="btn btn-success me-1"
-              onClick={onSubmitConfirm}
-            >Confirm</button>
-          }
-          
+        
+      <div>
           {
+            !proposal?.executed && (
+              <button
+              className="btn btn-success me-1"
+                type="submit"
+                onClick={onSubmitConfirm}
+                disabled={proposal?.executed}
+                //per il css
+                data-create-loading-execute={isLoadingConfirm}
+                data-create-started-execute={isSuccessStartedConfirm}
+              >
+                
+                {isLoadingConfirm && "Waiting for approval"}
+                {isSuccessStartedConfirm && "Executing..."}
+                {!isLoadingConfirm && !isSuccessStartedConfirm && "Confirm"}
+                {proposal?.numConfirmations.toString() === "_numConfirmationsRequired" && "Confirmed"}
+              </button>
+              
+            )}
+          </div>
+  
+          {errorConfirm && <p className="error">{errorConfirm.message}</p>}
+          {errorPrepareConfirm && <p className="error">{(errorPrepareConfirm as any).reason}</p>}
+            
+              
+
+          <div>
+            
+          {!proposal?.executed && (
+              <button
+              className="btn btn-primary me-1"
+                type="submit"
+                onClick={onSubmitExecute}
+                disabled={proposal?.executed}
+                //per il css
+                data-create-loading-execute={isLoadingExecute}
+                data-create-started-execute={isSuccessStartedExecute}
+              >
+                {isLoadingExecute && "Waiting for approval"}
+                {isSuccessStartedExecute && "Executing..."}
+                {!isLoadingExecute && !isSuccessStartedExecute && "Execute"}
+              </button>
+            )}
+            {proposal?.executed && (
+              <p className="text-success">Executed</p>)}
+          </div>
+          
+          {writeErrorExecute && <p className="error">{writeErrorExecute.message}</p>}
+          {errorExecutePrepare && <p className="error">{(errorExecutePrepare as any).reason}</p>}
+             
+        
+
+      <div>
+      {!proposal?.executed && (
+              <button
+              className="btn btn-danger me-1"
+                type="submit"
+                onClick={onSubmitRevoke}
+                disabled={proposal?.executed}
+                //per il css
+                data-create-loading-execute={isLoadingRevoke}
+                data-create-started-execute={isSuccessStartedRevoke}
+              >
+                {isLoadingRevoke && "Waiting for revoke"}
+                {isSuccessStartedRevoke && "Executing revoke..."}
+                {!isLoadingRevoke && !isSuccessStartedRevoke && "Revoke"}
+                
+              </button>
+            )}
+           
+          </div>
+          
+          {isErrorRevoke && <p className="error">{isErrorRevoke}</p>}
+          {errorRevokePrepare && <p className="error">{(errorRevokePrepare as any).reason}</p>}
+
+        {proposal?.proposalType === ProposalTypeEnum.ChangeOwner && !proposal.executed && (
+          <div>
             <button
               className="btn btn-primary me-1"
-              onClick={onSubmitExecute}
-            >Execute</button>
-          }
-          
-          {!proposal?.executed && 
-            <button
-              className="btn btn-danger me-1"
-              onClick={onSubmitRevoke}
-            >Revoke</button>
-          }
-        </div>
+              type="submit"
+              onClick={onSubmitImHere}
+              disabled={proposal?.executed}
+              //per il css
+              data-create-loading-ImHere={isLoadingImHere}
+              data-create-started-ImHere={isSuccessStartedImHere}
+            >
+              {isLoadingImHere && "Waiting for approval"}
+              {isSuccessStartedImHere && "Executing..."}
+              {!isLoadingImHere && !isSuccessStartedImHere && "I'm Here"}
+            </button>
 
-      {revokePrepare.isError && (
-        <div>Error: {(revokePrepare.error as any).reason}</div>
-      )}
-      {revokeConfirmation.isError && (
-        <div>Error: {(revokeConfirmation.error as any).reason}</div>
-      )}
+
+            {errorImHere && <p className="error">{errorImHere.message}</p>}
+            {errorImHerePrepare && <p className="error">{(errorImHerePrepare as any).reason}</p>}
+          </div>
+        )}
     </div>
   );
 };
+
