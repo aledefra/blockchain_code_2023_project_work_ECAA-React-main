@@ -1,9 +1,9 @@
 import { ethers } from "ethers";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { contractAbi } from "../../contractABIs/multisigABI";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { _alchemyKey } from "../../utils/key";
 
 type PTransactionProposal = {
@@ -17,6 +17,7 @@ const location = useLocation();
 const selectedAddress = location.state?.selectedAddress || "";
 const params = useParams();
 const myAddress = params.address as `0x${string}`;
+const navigate = useNavigate();
 
 const contractAddress = myAddress; 
 const alchemyApiKey = _alchemyKey;
@@ -74,7 +75,39 @@ const provider = new ethers.providers.AlchemyProvider(
         if (!writeTransaction) return;
         writeTransaction();
       }
-    
+
+      //reload and navigate to wallet page
+
+      const [isExecuted, setIsExecuted] = useState(false);
+
+      useEffect(() => {
+        let timerId: NodeJS.Timeout;
+      
+        if (isCreateStartedTransaction) {
+          timerId = setTimeout(() => {
+            setIsExecuted(true);
+          }, 5000); 
+        }
+      
+        return () => {
+          clearTimeout(timerId);
+        };
+      }, [isCreateStartedTransaction]);
+      
+      useEffect(() => {
+        const goProposal = () => {
+          navigate(`/wallets/${myAddress}`);
+          
+        };
+      
+        if (isExecuted) {
+          goProposal();
+          
+        }
+        
+      }, [isExecuted]);
+
+   
     
     return (
         
@@ -132,8 +165,11 @@ const provider = new ethers.providers.AlchemyProvider(
                         data-create-loading={isCreateLoadingTransaction}
                         data-create-started={isCreateStartedTransaction}
                       >
-                        Send
-                      </button>
+                    {isCreateStartedTransaction && "Waiting for approval"}
+                    {isCreateLoadingTransaction && "Executing..."}
+                    {!isCreateLoadingTransaction && !isCreateStartedTransaction && "Send"}
+                  </button>
+  
                     </div>
     
                     {(isPrepareErrorTransaction || error) && (

@@ -8,6 +8,7 @@ import { CreateProposal } from "./pages/proposals/proposal-type";
 import { Owners } from "./pages/owners/owners";
 import { defaultValueProposal } from "./utils/createProposal";
 import { MultisigWallet } from "./pages/multisigWallet/multisigWallet";
+import { TransferSetting } from "./pages/transfer/transferSetting";
 
 export const AppRoutes = () => {
 	return (
@@ -23,6 +24,10 @@ export const AppRoutes = () => {
 				<Route
 					path=":address/owners"
 					element={<Owners {...defaultValueProposal} />}
+				/>
+				<Route
+					path=":address/transfer"
+					element={<TransferSetting />}
 				/>
 
 				<Route

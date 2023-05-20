@@ -1,9 +1,9 @@
 import { ethers } from "ethers";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { contractAbi } from "../../contractABIs/multisigABI";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { _alchemyKey } from "../../utils/key";
 
   type PNFTTransactionProposal = {
@@ -13,7 +13,7 @@ import { _alchemyKey } from "../../utils/key";
   };
 
 export const NFTTransaction = (props: PNFTTransactionProposal) => {
-
+  const navigate = useNavigate();
   const location = useLocation();
   const selectedAddress = location.state?.selectedAddress || "";
   const params = useParams();
@@ -21,7 +21,7 @@ export const NFTTransaction = (props: PNFTTransactionProposal) => {
 
   //Propose NFT transaction 7
 
-  const [addressToNFTTransaction, setAddressToNFTTransaction] =
+  const [NFTTransaction, setNFTTransaction] =
     useState<PNFTTransactionProposal>({
       addressToNFTtransfer: "",
       addressNFT: "",
@@ -40,15 +40,13 @@ const contract = new ethers.Contract(contractAddress, contractAbi, provider);
 const {
     register,
     handleSubmit,
-    setValue,
-    watch,
     formState: { errors },
   } = useForm({
     mode: "onSubmit",
     defaultValues: {
-      addressToNFTtransfer: addressToNFTTransaction.addressToNFTtransfer,
-      addressNFT: addressToNFTTransaction.addressNFT,
-      idNFT: addressToNFTTransaction.idNFT,
+      addressToNFTtransfer: NFTTransaction.addressToNFTtransfer,
+      addressNFT: NFTTransaction.addressNFT,
+      idNFT: NFTTransaction.idNFT,
     },
   });
 
@@ -63,14 +61,14 @@ const {
     abi: contractAbi,
     functionName: "proposeNFTTransaction",
     args: [
-      addressToNFTTransaction.addressToNFTtransfer,
-      addressToNFTTransaction.addressNFT,
-      addressToNFTTransaction.idNFT,
+      NFTTransaction.addressToNFTtransfer,
+      NFTTransaction.addressNFT,
+      parseInt(NFTTransaction.idNFT),
     ],
   });
 
   const {
-    isSuccess: isCreateNFTTransactionProposal,
+    isSuccess: isStartedCreateNFTTransactionProposal,
     isLoading: isCreateNFTTransactionProposalLoading,
     data: dataProposalNFTTransaction,
     error: errorNFTTransaction,
@@ -81,7 +79,36 @@ const {
     if (!writeForNFTTransaction) return;
     writeForNFTTransaction();
   }
+//reload and navigate to wallet page
 
+const [isExecuted, setIsExecuted] = useState(false);
+
+useEffect(() => {
+  let timerId: NodeJS.Timeout;
+
+  if (isStartedCreateNFTTransactionProposal) {
+    timerId = setTimeout(() => {
+      setIsExecuted(true);
+    }, 5000); 
+  }
+
+  return () => {
+    clearTimeout(timerId);
+  };
+}, [isStartedCreateNFTTransactionProposal]);
+
+useEffect(() => {
+  const goProposal = () => {
+    navigate(`/wallets/${myAddress}`);
+    
+  };
+
+  if (isExecuted) {
+    goProposal();
+    
+  }
+  
+}, [isExecuted]);
 
 return (
 
@@ -98,12 +125,12 @@ return (
                       required: { value: true, message: "Field required" },
                     })}
                     onChange={(e) =>
-                      setAddressToNFTTransaction((addressToNFTTransaction) => ({
-                        ...addressToNFTTransaction,
+                      setNFTTransaction((NFTTransaction) => ({
+                        ...NFTTransaction,
                         addressToNFTtransfer: e.target.value,
                       }))
                     }
-                    value={addressToNFTTransaction.addressToNFTtransfer}
+                    value={NFTTransaction.addressToNFTtransfer}
                     placeholder="address to send token"
                   />
                 </div>
@@ -119,12 +146,12 @@ return (
                       required: { value: true, message: "Field required" },
                     })}
                     onChange={(e) =>
-                      setAddressToNFTTransaction((addressToNFTTransaction) => ({
-                        ...addressToNFTTransaction,
+                      setNFTTransaction((NFTTransaction) => ({
+                        ...NFTTransaction,
                         addressNFT: e.target.value,
                       }))
                     }
-                    value={addressToNFTTransaction.addressNFT}
+                    value={NFTTransaction.addressNFT}
                     placeholder="contract address NFT"
                   />
                 </div>
@@ -141,12 +168,12 @@ return (
                       required: { value: true, message: "Field required" },
                     })}
                     onChange={(e) =>
-                      setAddressToNFTTransaction((addressToNFTTransaction) => ({
-                        ...addressToNFTTransaction,
+                      setNFTTransaction((NFTTransaction) => ({
+                        ...NFTTransaction,
                         idNFT: e.target.value,
                       }))
                     }
-                    value={addressToNFTTransaction.idNFT}
+                    value={NFTTransaction.idNFT}
                     placeholder="id NFT send"
                   />
                 </div>
@@ -156,11 +183,14 @@ return (
                     className="btn btn-primary mt-2"
                     type="submit"
                     onClick={handleSubmit(onSubmitNFTtransaction)}
-                    disabled={isCreateNFTTransactionProposalLoading || isCreateNFTTransactionProposal}
+                    disabled={isCreateNFTTransactionProposalLoading || isStartedCreateNFTTransactionProposal}
+                    //per css
                     data-create-loading={isCreateNFTTransactionProposalLoading}
-                    data-create-started={isCreateNFTTransactionProposal}
+                    data-create-started={isCreateNFTTransactionProposalLoading}
                   >
-                    Send
+                    {isStartedCreateNFTTransactionProposal && "Waiting for approval"}
+                    {isCreateNFTTransactionProposalLoading && "Executing..."}
+                    {!isCreateNFTTransactionProposalLoading && !isStartedCreateNFTTransactionProposal && "Send"}
                   </button>
                 </div>
 

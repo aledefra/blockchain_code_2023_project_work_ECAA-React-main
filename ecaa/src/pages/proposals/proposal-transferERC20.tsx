@@ -1,9 +1,9 @@
 import { ethers } from "ethers";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { contractAbi } from "../../contractABIs/multisigABI";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { _alchemyKey } from "../../utils/key";
 
   type PTokenTransactionProposal = {
@@ -13,7 +13,7 @@ import { _alchemyKey } from "../../utils/key";
   };
 
 export const TokenTransaction = (props: PTokenTransactionProposal) => {
-
+  const navigate = useNavigate();
   const location = useLocation();
   const selectedAddress = location.state?.selectedAddress || "";
   const params = useParams();
@@ -40,8 +40,6 @@ const contract = new ethers.Contract(contractAddress, contractAbi, provider);
 const {
     register,
     handleSubmit,
-    setValue,
-    watch,
     formState: { errors },
   } = useForm({
     mode: "onSubmit",
@@ -65,12 +63,12 @@ const {
     args: [
       tokenTransaction.addressToTokentransfer,
       tokenTransaction.addressToken,
-      tokenTransaction.amountToken,
+      parseInt(tokenTransaction.amountToken),
     ],
   });
 
   const {
-    isSuccess: isCreateTokenTransactionProposal,
+    isSuccess: isStartedCreateTokenTransactionProposal,
     isLoading: isCreateTokenTransactionProposalLoading,
     data: dataProposalTokenTransaction,
     error: errorTokenTransaction,
@@ -81,7 +79,36 @@ const {
     if (!writeForTokenTransaction) return;
     writeForTokenTransaction();
   }
+//reload and navigate to wallet page
 
+const [isExecuted, setIsExecuted] = useState(false);
+
+useEffect(() => {
+  let timerId: NodeJS.Timeout;
+
+  if (isStartedCreateTokenTransactionProposal) {
+    timerId = setTimeout(() => {
+      setIsExecuted(true);
+    }, 5000); 
+  }
+
+  return () => {
+    clearTimeout(timerId);
+  };
+}, [isStartedCreateTokenTransactionProposal]);
+
+useEffect(() => {
+  const goProposal = () => {
+    navigate(`/wallets/${myAddress}`);
+    
+  };
+
+  if (isExecuted) {
+    goProposal();
+    
+  }
+  
+}, [isExecuted]);
 
 
 return (
@@ -157,11 +184,13 @@ return (
                     className="btn btn-primary mt-2"
                     type="submit"
                     onClick={handleSubmit(onSubmitTokenTransaction)}
-                    disabled={isCreateTokenTransactionProposalLoading || isCreateTokenTransactionProposal}
+                    disabled={isCreateTokenTransactionProposalLoading || isStartedCreateTokenTransactionProposal}
                     data-create-loading={isCreateTokenTransactionProposalLoading}
-                    data-create-started={isCreateTokenTransactionProposal}
+                    data-create-started={isStartedCreateTokenTransactionProposal}
                   >
-                    Send
+                    {isStartedCreateTokenTransactionProposal && "Waiting for approval"}
+                    {isCreateTokenTransactionProposalLoading && "Executing..."}
+                    {!isCreateTokenTransactionProposalLoading && !isStartedCreateTokenTransactionProposal && "Send"}
                   </button>
                 </div>
 

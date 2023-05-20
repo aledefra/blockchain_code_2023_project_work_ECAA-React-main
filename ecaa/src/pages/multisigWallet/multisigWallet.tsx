@@ -71,6 +71,14 @@ export const MultisigWallet = () => {
       </div>
 
       <hr />
+	  <button
+				className="btn btn-primary me-1"
+				onClick={() => {
+					navigate(`/wallets/${address}/transfer`);
+				}}
+			>
+				Transfer Balance
+			</button>
 
 			<button
 				className="btn btn-primary me-1"

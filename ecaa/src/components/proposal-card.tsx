@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { IProposal } from "../model/proposalType-model";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useContractRead, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { _alchemyKey } from "../utils/key";
 
@@ -26,6 +26,7 @@ enum ProposalTypeEnum {
 export const ProposalCard = (props: Props) => {
   const index = props.index;
   const contractAbi = props.contractAbi;
+  const navigate = useNavigate();
   const params = useParams();
   const address = params.address;
   const fixedAddress = address as `0x${string}`;
@@ -405,6 +406,7 @@ useEffect(() => {
             {proposal?.executed && (
               <p className="text-success">Executed</p>)}
           </div>
+            
           
           {writeErrorExecute && <p className="error">{writeErrorExecute.message}</p>}
           {errorExecutePrepare && <p className="error">{(errorExecutePrepare as any).reason}</p>}
@@ -434,6 +436,7 @@ useEffect(() => {
           {isErrorRevoke && <p className="error">{isErrorRevoke}</p>}
           {errorRevokePrepare && <p className="error">{(errorRevokePrepare as any).reason}</p>}
 
+
         {proposal?.proposalType === ProposalTypeEnum.ChangeOwner && !proposal.executed && (
           <div>
             <button
@@ -455,6 +458,24 @@ useEffect(() => {
             {errorImHerePrepare && <p className="error">{(errorImHerePrepare as any).reason}</p>}
           </div>
         )}
+        
+        { proposal?.proposalType === ProposalTypeEnum.ChangeOwner
+          || proposal?.proposalType === ProposalTypeEnum.RemoveOwner 
+          || proposal?.proposalType === ProposalTypeEnum.NewOwner 
+        && proposal.executed && (
+          
+            <div>
+            <button
+				className="btn btn-primary me-1"
+				onClick={() => {
+					navigate(`/wallets/${address}/owners`);
+				}}
+			>
+				Owners' settings
+			</button>
+            </div>
+        )}
+
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { useForm } from "react-hook-form";
 import { IProposalType } from "../../model/proposalType-model";
 import { useLocation, useParams } from "react-router-dom";
-import { TransactionProposal } from "./proposal-transfer"
+import { TransactionProposal } from "./proposal-transfer";
 import { NewOwner } from "./proposal-newOwner";
 import { RemoveOwner } from "./proposal-removeOwner";
 import { ChangeTreshold } from "./proposal-changeTreshold";
