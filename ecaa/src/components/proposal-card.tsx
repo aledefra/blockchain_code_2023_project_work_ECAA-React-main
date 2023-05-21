@@ -70,8 +70,6 @@ export const ProposalCard = (props: Props) => {
 
  }
 
-
-
 // execute proposal
 
  const {
@@ -146,8 +144,6 @@ if (!writeImHere) return;
 writeImHere();
 
 }
-
-
 
 // prova reload CONFIRM 
 

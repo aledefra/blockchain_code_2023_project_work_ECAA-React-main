@@ -35,7 +35,6 @@ export const CreateWallet = (props: PcreateWallet) => {
 
   //parametri per la creazione del wallet
   const debouncedOwners = useDebounce(owners, 500);
-  console.log("Debounced", debouncedOwners);
   const debouncedConfirmations = useDebounce(confirmations, 500);
   const debouncedTreshold = useDebounce(treshold, 500);
   
@@ -63,7 +62,7 @@ export const CreateWallet = (props: PcreateWallet) => {
   const formattedOwners = debouncedOwners[0]
     .split(",")
     .map((address) => address.trim());
-  console.log("formatted owners", formattedOwners);
+
 
   //preparo la funzione per creare il wallet
   const {
@@ -79,7 +78,6 @@ export const CreateWallet = (props: PcreateWallet) => {
       parseInt(debouncedConfirmations[0]),
       parseInt(debouncedTreshold[0]),
     ],
-    //args:[["0x4165279351bFA40e821ac16AeA60ed29d9c1Bb29", "0x63ce1ec5bf1163dc7dcf2c1d7f5d5f3d56c6fcbb"],1 , 1],
     
   });
 
@@ -90,8 +88,6 @@ export const CreateWallet = (props: PcreateWallet) => {
     error: writeError,
     write,
   } = useContractWrite(config);
-  console.log(config);
-  console.log(dataContract);
 
 
   function onSubmit() {
@@ -110,7 +106,6 @@ export const CreateWallet = (props: PcreateWallet) => {
   useEffect(() => {
     const handleProxyCreated = async (_address:Address) => {
       setNewWalletAddress(_address);
-      console.log("multisig creato:", newWalletAddress);
     };
 
     contract.once("ProxyCreated", handleProxyCreated);
@@ -139,7 +134,7 @@ export const CreateWallet = (props: PcreateWallet) => {
     _confirmation: "",
   });
   
-  console.log("numConfirmationsRequiredtoExecute", numConfirmationsRequiredtoExecute)
+
   useEffect(() => {
     if (isCreateStarted) {
   setNumConfirmationsRequiredtoExecute({

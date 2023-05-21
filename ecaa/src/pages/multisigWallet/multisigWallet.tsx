@@ -1,10 +1,9 @@
 import { ethers } from "ethers";
 import { useState } from "react";
-import { useAccount, useBalance } from "wagmi";
+import { useBalance } from "wagmi";
 import { useContractRead } from "wagmi";
 import { useNavigate } from "react-router-dom";
-import { defaultInitialize } from "../../utils/createWallet";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { contractAbi } from "../../contractABIs/multisigABI";
 
 import { ProposalCard } from "../../components/proposal-card";
@@ -18,7 +17,6 @@ const provider = new ethers.providers.AlchemyProvider(
 );
 
 export const MultisigWallet = () => {
-	const [index, setIndex] = useState(0);
 	const params = useParams();
 	const address = params.address;
 	const navigate = useNavigate();
@@ -41,11 +39,11 @@ export const MultisigWallet = () => {
 		abi: contractAbi,
 		functionName: "getProposalsCount",
 	});
-	console.log("Data:", NumberOfProposal);
+
 
 	const numberofProposals = parseInt(NumberOfProposal as string);
 
-	console.log("Number of proposals: ", numberofProposals);
+
 
 	const proposalCards = [];
 	for (let i = 0; i < numberofProposals; i++) {

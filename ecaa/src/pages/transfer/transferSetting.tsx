@@ -2,12 +2,11 @@ import { TokenTransaction } from "../proposals/proposal-transferERC20";
 import { NFTTransaction } from "../proposals/proposal-transferERC721";
 import { TransactionProposal } from "../proposals/proposal-transfer";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
 import { useContractRead, useToken } from "wagmi";
 import { useParams } from "react-router-dom";
 import { contractAbiERC20 } from "../../contractABIs/ERC20prova";
 import { contractAbiERC721 } from "../../contractABIs/ERC721prova";
-import { ProposalCard } from "../../components/proposal-card";
+
 
 
 type PAddressERC20 = {
@@ -15,13 +14,6 @@ type PAddressERC20 = {
 };
 type PAddressERC721 = {
   addressERC721: string;
-};
-
-type PAsset = {
-  Asset: "Asset";
-  token: "token";
-  nft: "nft";
-  
 };
 
 
@@ -34,7 +26,6 @@ export const TransferSetting = () => {
   const {
     register,
     watch,
-    handleSubmit,
     formState: { errors },
   } = useForm({
     mode: "onSubmit",
@@ -44,15 +35,6 @@ export const TransferSetting = () => {
   });
 
   const watchType = watch("Asset");
-
-
-  const [asset,setAsset] = useState<PAsset>({
-    Asset: "Asset",
-    token: "token",
-    nft: "nft",
-  });
-
-  
 
   //ERC20 Balance ??
   const { data: balanceMyContract, isFetched } = useContractRead({
@@ -89,14 +71,15 @@ export const TransferSetting = () => {
   return (
     <div>
       <div className="row">
+       
         <select
-          className="selector form-control"
+          className= "form-select form-select-lg mb-3" aria-label=".form-select-lg example"
           {...register("Asset", {
             required: { value: true, message: "Field required" },
             
           })}
         >
-          <option value="Assets">Choose Assets</option>
+          <option value="">Choose Assets</option>
           <option value="token">Token</option>
           <option value="nft">NFT</option>
           
@@ -109,12 +92,13 @@ export const TransferSetting = () => {
             <>
               <div className="row">
                 <select
-                  className="selector form-control"
+                  
+                  className= "form-select form-select-sm" aria-label=".form-select-sm example"
                   {...register("Asset", {
                     required: { value: true, message: "Field required" },
                   })}
                 >
-                  <option value="Assets">Choose Asset</option>
+                  <option value="">Choose Token</option>
                   <option value="matic">Matic</option>
                   <option value="savedToked">{nameERC20}</option>
                   <option value="newErc20">New Token</option>
@@ -146,9 +130,9 @@ export const TransferSetting = () => {
             <h2>Decimals : {decimalsERC20}</h2>
           </div>
           <h2>Transfer Token</h2>
-          <TokenTransaction
+          <TokenTransaction 
             addressToTokentransfer={""}
-            addressToken = {contractERC20}
+            addressToken = {""}
             amountToken={""}
           />
         </>
@@ -177,9 +161,13 @@ export const TransferSetting = () => {
                 idNFT={""}
               />
             </>
+            
           )}
         </div>
+        
       )}
+     
     </div>
+    
   );
 };
