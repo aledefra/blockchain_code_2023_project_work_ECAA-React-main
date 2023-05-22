@@ -1,36 +1,21 @@
-import { ethers } from "ethers";
-import { useState } from "react";
 import { useBalance } from "wagmi";
 import { useContractRead } from "wagmi";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { contractAbi } from "../../contractABIs/multisigABI";
-
 import { ProposalCard } from "../../components/proposal-card";
-import { _alchemyKey } from "../../utils/key";
 
-// const contractAddress = defaultInitialize.newWalletAddress as `0x${string}`;
-const alchemyApiKey = _alchemyKey;
-const provider = new ethers.providers.AlchemyProvider(
-	"maticmum",
-	alchemyApiKey
-);
+
 
 export const MultisigWallet = () => {
 	const params = useParams();
 	const address = params.address;
 	const navigate = useNavigate();
-	const contract = new ethers.Contract(
-		address as string,
-		contractAbi,
-		provider
-	);
+	
 
 	const {
 		data: addressBalance,
-		isError: balanceError,
-		isLoading: balanceLoading,
-	} = useBalance({
+		} = useBalance({
 		address: address as `0x${string}`,
 	});
 
@@ -75,7 +60,7 @@ export const MultisigWallet = () => {
 					navigate(`/wallets/${address}/transfer`);
 				}}
 			>
-				Transfer Balance
+				Transfer some Balance
 			</button>
 
 			<button

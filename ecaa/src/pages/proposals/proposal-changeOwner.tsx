@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { contractAbi } from "../../contractABIs/multisigABI";
-import { useLocation, useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 
     type PChangeOwnersProposal = {
     addressOldOwner: string;
@@ -12,8 +12,7 @@ import { useLocation, useParams } from "react-router-dom";
 
 export const ChangeOwner = (props: PChangeOwnersProposal) => {
 
-  const location = useLocation();
-  const selectedAddress = location.state?.selectedAddress || "";
+
   const params = useParams();
   const myAddress = params.address as `0x${string}`;
 
@@ -28,9 +27,6 @@ export const ChangeOwner = (props: PChangeOwnersProposal) => {
 const {
     register,
     handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
   } = useForm({
     mode: "onSubmit",
     defaultValues: {

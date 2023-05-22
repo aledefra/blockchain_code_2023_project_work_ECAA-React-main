@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { IProposal } from "../model/proposalType-model";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContractRead, useContractWrite, usePrepareContractWrite } from "wagmi";
-import { _alchemyKey } from "../utils/key";
 
 
 type Props = {
@@ -455,9 +454,9 @@ useEffect(() => {
           </div>
         )}
         
-        { proposal?.proposalType === ProposalTypeEnum.ChangeOwner
+        { (proposal?.proposalType === ProposalTypeEnum.ChangeOwner
           || proposal?.proposalType === ProposalTypeEnum.RemoveOwner 
-          || proposal?.proposalType === ProposalTypeEnum.NewOwner 
+          || proposal?.proposalType === ProposalTypeEnum.NewOwner)
         && proposal.executed && (
           
             <div>

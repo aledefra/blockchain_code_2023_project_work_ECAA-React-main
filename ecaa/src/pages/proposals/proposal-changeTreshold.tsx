@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { contractAbi } from "../../contractABIs/multisigABI";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
    type PChangeTresholdProposal = {
     treshold: string;
@@ -11,8 +11,7 @@ import { useLocation, useParams } from "react-router-dom";
 
 export const ChangeTreshold = (props: PChangeTresholdProposal) => {
 
-  const location = useLocation();
-  const selectedAddress = location.state?.selectedAddress || "";
+
   const params = useParams();
   const myAddress = params.address as `0x${string}`;
 
@@ -24,9 +23,6 @@ export const ChangeTreshold = (props: PChangeTresholdProposal) => {
 const {
     register,
     handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
   } = useForm({
     mode: "onSubmit",
     defaultValues: {

@@ -1,8 +1,3 @@
-import { useEffect, useState } from "react";
-import { contractAbi } from "../../contractABIs/multisigABI";
-import { defaultInitialize } from "../../utils/createWallet";
-import { ethers } from "ethers";
-import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { useForm } from "react-hook-form";
 import { IProposalType } from "../../model/proposalType-model";
 import { useLocation, useParams } from "react-router-dom";
@@ -14,12 +9,9 @@ import { ChangeNumConfirmations } from "./proposal-numConfirm";
 import { ChangeOwner } from "./proposal-changeOwner";
 import { TokenTransaction } from "./proposal-transferERC20";
 import { NFTTransaction } from "./proposal-transferERC721";
-import { _alchemyKey } from "../../utils/key";
 
 export const CreateProposal = (props: IProposalType) => {
-  type PCreateProposal = {
-    defaultValues: IProposalType;
-  };
+  
   type PChooseTypeProposal = {
     type: number;
   };
@@ -38,23 +30,13 @@ export const CreateProposal = (props: IProposalType) => {
   console.log("questo è il contract address", contractAddress.toString());
   console.log("questo è il selected address", selectedAddress.toString());
 
-  const [chooseType, setChoseType] = useState<PChooseTypeProposal>({
+  const chooseType : PChooseTypeProposal = {
     type: 0 || 1 || 2 || 3 || 4 || 5 || 6 || 7,
-  });
+  };
 
-  //chiavi alchemy
-  const alchemyApiKey = _alchemyKey;
-  const provider = new ethers.providers.AlchemyProvider(
-    "maticmum",
-    alchemyApiKey
-  );
-
-
-  const contract = new ethers.Contract(contractAddress, contractAbi, provider);
-  const {
+   const {
     register,
     watch,
-    formState: { errors },
   } = useForm({
     mode: "onSubmit",
     defaultValues: {

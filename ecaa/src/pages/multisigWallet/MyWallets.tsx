@@ -1,16 +1,12 @@
 import { ethers } from "ethers";
 import { useState, useEffect } from "react";
-import { useAccount } from "wagmi";
-import { useContractRead } from "wagmi";
-import { defaultInitialize } from "../../utils/createWallet";
-import { contractAbiMulti } from "../../contract-abi";
 import { _alchemyKey } from "../../utils/key";
 
-const contractAddress = defaultInitialize.newWalletAddress;
+const provider = new ethers.providers.AlchemyProvider(
+  "maticmum",
+_alchemyKey
 
-const contractAbi = contractAbiMulti;
-
-const alchemyApiKey = _alchemyKey;
+);
 
 export type SavedContract = {
 	address: string;
@@ -20,12 +16,6 @@ export type SavedContract = {
 export const MyWallets = () => {
 	
 	const [contracts, setContracts] = useState<SavedContract[]>([]);
-	const { address } = useAccount();
-	const { data, isError, isLoading } = useContractRead({
-		abi: contractAbi,
-		functionName: "getOwners",
-	});
-
 	const [walletToAdd, setWalletToAdd] = useState<string>("");
 	const [walletName, setWalletName] = useState<string>("");
 
@@ -33,11 +23,18 @@ export const MyWallets = () => {
 		setContracts(JSON.parse(localStorage.getItem("contracts") || "[]"));
 	}, []);
 
-	const addWallet = () => {
+	const addWallet =async () => {
 		// check if wallet is already saved
 		if (contracts.find((c) => c.address === walletToAdd)) {
 			alert("Wallet already saved");
 			return;
+		}
+		const hexString =
+        "0x363d3d373d3d3d363d73275a1065d8dd790c57d0033e5a74d704cd2130be5af43d82803e903d91602b57fd5bf3";
+		if(await provider.getCode(walletToAdd) !== hexString) {
+	    alert("The address you entered is not a multisig wallet address");
+        return;
+
 		}
 
 		// add wallet to local storage
