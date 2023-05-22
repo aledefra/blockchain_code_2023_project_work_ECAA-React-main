@@ -18,6 +18,9 @@ export const Owners = (props: IProposalType) => {
     undefined
   );
 
+  const [changeOwnerOld, setChangeOwnerOld] = useState<string>("");
+  const [changeOwnerNew, setChangeOwnerNew] = useState<string>("");
+
   // Getters
   const { data: owners }: { data: string[] | undefined } = useContractRead({
     address: contractAddress as `0x${string}`,
@@ -39,6 +42,15 @@ export const Owners = (props: IProposalType) => {
       setOwnerToRemove(undefined);
     }
   }, [ownerToRemove]);
+
+  // Change owner
+  const changeOwnerPrepare = usePrepareContractWrite({
+    address: contractAddress as `0x${string}`,
+    abi: contractAbi,
+    functionName: "proposeChangeOwner",
+    args: [changeOwnerOld, changeOwnerNew],
+  });
+  const changeOwnerWrite = useContractWrite(changeOwnerPrepare.config);
 
   // Add owner
   const addOwnerPrepare = usePrepareContractWrite({
@@ -113,10 +125,66 @@ export const Owners = (props: IProposalType) => {
         </tbody>
       </table>
 
+      <hr />
+
       <div className="row">
         <NumConfirmation owners={owners} />
         <Threshold owners={owners} />
       </div>
+
+      <hr />
+
+      <h2>Change owner</h2>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          //check if old owner is in owners array
+          if (!owners?.includes(changeOwnerOld)) {
+            alert("Old owner is not an owner");
+            return;
+          }
+          //check if old owner and new owner are the same
+          if (changeOwnerOld === changeOwnerNew) {
+            alert("Old owner and new owner can't be the same");
+            return;
+          }
+          //check if new owner is in owners array
+          if (owners?.includes(changeOwnerNew)) {
+            alert("New owner is already an owner");
+            return;
+          }
+          
+          changeOwnerWrite?.write?.();
+        }}
+      >
+        <label htmlFor="changeOwnerOld">Old owner address</label>
+        <input
+          type="text"
+          id="changeOwnerOld"
+          className="form-control"
+          placeholder="Old owner address"
+          value={changeOwnerOld}
+          onChange={(e) => setChangeOwnerOld(e.target.value)}
+        />
+
+        <label htmlFor="changeOwnerNew">New owner address</label>
+        <input
+          type="text"
+          id="changeOwnerNew"
+          className="form-control"
+          placeholder="New owner address"
+          value={changeOwnerNew}
+          onChange={(e) => setChangeOwnerNew(e.target.value)}
+        />
+        <input
+          type="submit"
+          className="btn btn-primary mt-2"
+          value="Change Owner"
+          disabled={changeOwnerOld === "" || changeOwnerNew === ""}
+        />
+      </form>
+
+
     </div>
   );
 };
