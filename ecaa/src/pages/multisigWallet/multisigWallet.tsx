@@ -1,23 +1,22 @@
 import { ethers } from "ethers";
 import { useState } from "react";
-import { useAccount, useBalance } from "wagmi";
+import { useBalance } from "wagmi";
 import { useContractRead } from "wagmi";
 import { useNavigate } from "react-router-dom";
-import { defaultInitialize } from "../../utils/createWallet";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { contractAbi } from "../../contractABIs/multisigABI";
 
 import { ProposalCard } from "../../components/proposal-card";
+import { _alchemyKey } from "../../utils/key";
 
 // const contractAddress = defaultInitialize.newWalletAddress as `0x${string}`;
-const alchemyApiKey = "z8b0aKqHNwhW3rp7JdoPv1_dUrOAW1dI";
+const alchemyApiKey = _alchemyKey;
 const provider = new ethers.providers.AlchemyProvider(
 	"maticmum",
 	alchemyApiKey
 );
 
 export const MultisigWallet = () => {
-	const [index, setIndex] = useState(0);
 	const params = useParams();
 	const address = params.address;
 	const navigate = useNavigate();
@@ -40,11 +39,11 @@ export const MultisigWallet = () => {
 		abi: contractAbi,
 		functionName: "getProposalsCount",
 	});
-	console.log("Data:", NumberOfProposal);
+
 
 	const numberofProposals = parseInt(NumberOfProposal as string);
 
-	console.log("Number of proposals: ", numberofProposals);
+
 
 	const proposalCards = [];
 	for (let i = 0; i < numberofProposals; i++) {
@@ -70,6 +69,14 @@ export const MultisigWallet = () => {
       </div>
 
       <hr />
+	  <button
+				className="btn btn-primary me-1"
+				onClick={() => {
+					navigate(`/wallets/${address}/transfer`);
+				}}
+			>
+				Transfer Balance
+			</button>
 
 			<button
 				className="btn btn-primary me-1"

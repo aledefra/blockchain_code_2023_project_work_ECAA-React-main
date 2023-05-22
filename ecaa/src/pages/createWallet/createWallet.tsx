@@ -14,17 +14,19 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { contractAbiMulti } from "../../contract-abi";
+import { _alchemyKey } from "../../utils/key";
 
 type PcreateWallet = {
   defaultValue: IInitialize;
 };
 
+
 const contractAbi = contractAbiMulti;
 
 const contractAddress = "0x06a9FAD3C4CECb75AC5c2Dc96aEbb298318826bc";
 
+
 export const CreateWallet = (props: PcreateWallet) => {
-  
   const [owners, setOwners] = useState("");
   const [confirmations, setConfirmations] = useState("");
   const [treshold, setTreshold] = useState("");
@@ -33,7 +35,6 @@ export const CreateWallet = (props: PcreateWallet) => {
 
   //parametri per la creazione del wallet
   const debouncedOwners = useDebounce(owners, 500);
-  console.log("Debounced", debouncedOwners);
   const debouncedConfirmations = useDebounce(confirmations, 500);
   const debouncedTreshold = useDebounce(treshold, 500);
   
@@ -52,7 +53,7 @@ export const CreateWallet = (props: PcreateWallet) => {
   });
 
   //preparo il contratto
-  const alchemyApiKey = "z8b0aKqHNwhW3rp7JdoPv1_dUrOAW1dI";
+  const alchemyApiKey = _alchemyKey;
   const provider = new ethers.providers.AlchemyProvider(
     "maticmum",
     alchemyApiKey
@@ -61,7 +62,7 @@ export const CreateWallet = (props: PcreateWallet) => {
   const formattedOwners = debouncedOwners[0]
     .split(",")
     .map((address) => address.trim());
-  console.log("formatted owners", formattedOwners);
+
 
   //preparo la funzione per creare il wallet
   const {
@@ -77,7 +78,6 @@ export const CreateWallet = (props: PcreateWallet) => {
       parseInt(debouncedConfirmations[0]),
       parseInt(debouncedTreshold[0]),
     ],
-    //args:[["0x4165279351bFA40e821ac16AeA60ed29d9c1Bb29", "0x63ce1ec5bf1163dc7dcf2c1d7f5d5f3d56c6fcbb"],1 , 1],
     
   });
 
@@ -88,8 +88,6 @@ export const CreateWallet = (props: PcreateWallet) => {
     error: writeError,
     write,
   } = useContractWrite(config);
-  console.log(config);
-  console.log(dataContract);
 
 
   function onSubmit() {
@@ -108,7 +106,6 @@ export const CreateWallet = (props: PcreateWallet) => {
   useEffect(() => {
     const handleProxyCreated = async (_address:Address) => {
       setNewWalletAddress(_address);
-      console.log("multisig creato:", newWalletAddress);
     };
 
     contract.once("ProxyCreated", handleProxyCreated);
@@ -127,6 +124,27 @@ export const CreateWallet = (props: PcreateWallet) => {
     }
   }, [newWalletAddress]);
 
+  
+//da valutare se può essere utile per passare il numero di conferme da raggiungere
+  type PnumConfirmationsRequiredtoExecute = {
+      _confirmation: string;  
+      };
+
+  const [numConfirmationsRequiredtoExecute, setNumConfirmationsRequiredtoExecute] = useState<PnumConfirmationsRequiredtoExecute>({
+    _confirmation: "",
+  });
+  
+
+  useEffect(() => {
+    if (isCreateStarted) {
+  setNumConfirmationsRequiredtoExecute({
+    _confirmation: confirmations,
+  })
+    }
+  }, [isCreateStarted]);
+  
+
+  
 
 
   return (

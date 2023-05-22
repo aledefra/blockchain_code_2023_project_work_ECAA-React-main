@@ -7,8 +7,13 @@ import reportWebVitals from "./reportWebVitals";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { polygonMumbai } from "wagmi/chains";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
+import { _alchemyKey } from "./utils/key";
 
-const alchemyKey = "z8b0aKqHNwhW3rp7JdoPv1_dUrOAW1dI";
+
+
+const alchemyKey = _alchemyKey;
+
+console.log("Alchemy key: ", alchemyKey);
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

@@ -5,6 +5,7 @@ export interface IProposalType {
     NewOwner: number,
     RemoveOwner: number,
     ChangeThreshold: number,
+    ChangeNumConfirmations: number,
     ChangeOwner: number,
     TokenTransaction: number,
     NFTTransaction: number
