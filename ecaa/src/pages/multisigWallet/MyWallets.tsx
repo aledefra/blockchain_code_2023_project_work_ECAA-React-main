@@ -18,7 +18,7 @@ export const MyWallets = () => {
 	const [contracts, setContracts] = useState<SavedContract[]>([]);
 	const [walletToAdd, setWalletToAdd] = useState<string>("");
 	const [walletName, setWalletName] = useState<string>("");
-
+	
 	useEffect(() => {
 		setContracts(JSON.parse(localStorage.getItem("contracts") || "[]"));
 	}, []);
@@ -29,8 +29,11 @@ export const MyWallets = () => {
 			alert("Wallet already saved");
 			return;
 		}
+
+	
+    	// check if wallet is a multisig wallet
 		const hexString =
-        "0x363d3d373d3d3d363d73275a1065d8dd790c57d0033e5a74d704cd2130be5af43d82803e903d91602b57fd5bf3";
+        "0x363d3d373d3d3d363d73f0049d779ef97adece94863ed204c243f3dedebe5af43d82803e903d91602b57fd5bf3";
 		if(await provider.getCode(walletToAdd) !== hexString) {
 	    alert("The address you entered is not a multisig wallet address");
         return;

@@ -21,7 +21,8 @@ type PcreateWallet = {
 
 const contractAbi = contractAbiMulti;
 
-const contractAddress = "0x06a9FAD3C4CECb75AC5c2Dc96aEbb298318826bc";
+const contractAddress = "0x9B7a0A1a6B819f86869850eA807DC8eb5a39752e";
+const LogicContractAddress = "0xf0049d779ef97adece94863ed204c243f3dedebe";
 
 
 export const CreateWallet = (props: PcreateWallet) => {
@@ -152,16 +153,16 @@ export const CreateWallet = (props: PcreateWallet) => {
   
 
   return (
-    <div className="createWallet"><div>
-      <h1>Create Wallet</h1>
+    <div className="createWallet">
+      <div>
+        <h1>Create Wallet</h1>
 
         {isConnected && <p>Proxy Contract Address: {contractAddress}</p>}
+        {isConnected && <p>Multisig Logic Contract Address: {LogicContractAddress}</p>}
         {isCreateWallet && (
           <p>Multisig created, transaction hash: {dataContract?.hash}</p>
         )}
-        {isCreateWallet && (
-          <p>Address new multisig: {newWalletAddress}</p>
-        )}
+        {isCreateWallet && <p>Address new multisig: {newWalletAddress}</p>}
       </div>
 
       {isCreateWallet && (
@@ -190,14 +191,24 @@ export const CreateWallet = (props: PcreateWallet) => {
           </button>
 
           <div className="mb-2">
-          {fields.map((item, index, array) => (
-            <>
-              <div key={item.id} className="input-group my-1">
-                <input placeholder="0x..." className="form-control" {...register(`owners.${index}.address`)}/>
-                <button className="btn btn-outline-danger" type="button" onClick={() => remove(index)}>Delete</button>
-              </div>
-            </>
-          ))}
+            {fields.map((item, index, array) => (
+              <>
+                <div key={item.id} className="input-group my-1">
+                  <input
+                    placeholder="0x..."
+                    className="form-control"
+                    {...register(`owners.${index}.address`)}
+                  />
+                  <button
+                    className="btn btn-outline-danger"
+                    type="button"
+                    onClick={() => remove(index)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </>
+            ))}
           </div>
         </div>
 
@@ -272,7 +283,9 @@ export const CreateWallet = (props: PcreateWallet) => {
         </div>
 
         {writeError && <p className="error">Error: {writeError.message}</p>}
-        {prepareError && <p className="error">Error: {(prepareError as any).reason}</p>}
+        {prepareError && (
+          <p className="error">Error: {(prepareError as any).reason}</p>
+        )}
       </form>
     </div>
   );
