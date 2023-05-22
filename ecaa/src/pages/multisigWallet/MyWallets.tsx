@@ -26,14 +26,44 @@ export const MyWallets = () => {
 		functionName: "getOwners",
 	});
 
+	const [walletToAdd, setWalletToAdd] = useState<string>("");
+	const [walletName, setWalletName] = useState<string>("");
+
 	useEffect(() => {
 		setContracts(JSON.parse(localStorage.getItem("contracts") || "[]"));
 	}, []);
 
+	const addWallet = () => {
+		// check if wallet is already saved
+		if (contracts.find((c) => c.address === walletToAdd)) {
+			alert("Wallet already saved");
+			return;
+		}
+
+		// add wallet to local storage
+		const newContracts = [
+			...contracts,
+			{
+				address: walletToAdd,
+				name: walletName,
+			},
+		];
+		localStorage.setItem("contracts", JSON.stringify(newContracts));
+		setContracts(newContracts);
+	}
+
+	const removeWallet = (addressToRemove: string) => {
+		const newContracts = contracts.filter(
+			(c) => c.address !== addressToRemove
+		);
+		localStorage.setItem("contracts", JSON.stringify(newContracts));
+		setContracts(newContracts);
+	}
+
 
 	return (
 		<div className="MyMultisig">
-			<h1>MyWallets</h1>
+			<h1>My Wallets</h1>
 			<div>
 				<table className="table table-striped">
 					<thead>
@@ -55,12 +85,51 @@ export const MyWallets = () => {
 									>
 										Open
 									</a>
+									<button
+										className="btn btn-outline-danger ms-2"
+										onClick={() =>
+											removeWallet(contract.address)
+										}
+									>
+										Remove
+									</button>
 								</td>
 							</tr>
 						))}
 					</tbody>
 				</table>
+				<hr />
+
+				<h2>Add Wallet</h2>
+				<div className="form-group">
+					<label htmlFor="walletAddress">Wallet Address</label>
+					<input
+						type="text"
+						className="form-control"
+						id="walletAddress"
+						placeholder="0x..."
+						value={walletToAdd}
+						onChange={(e) => setWalletToAdd(e.target.value)}
+					/>
+
+					<label htmlFor="walletName">Wallet Name</label>
+					<input
+						type="text"
+						className="form-control"
+						id="walletName"
+						placeholder="My Wallet"
+						value={walletName}
+						onChange={(e) => setWalletName(e.target.value)}
+					/>
+
+					<button
+						className="btn btn-primary mt-2"
+						onClick={addWallet}
+					>
+						Add Wallet
+					</button>
+				</div>
+			</div>
 		</div>
-	</div>
 	);
 };

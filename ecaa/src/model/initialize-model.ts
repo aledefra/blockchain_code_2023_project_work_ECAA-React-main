@@ -1,5 +1,5 @@
 export interface IInitialize {
-    owners : string[],
+    owners : { address: string }[],
     numConfirmationsRequired: number,
     numTreshold: number,
     newWalletAddress: string

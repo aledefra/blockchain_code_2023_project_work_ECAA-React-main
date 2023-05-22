@@ -10,7 +10,7 @@ import {
 } from "wagmi";
 import { IInitialize } from "../../model/initialize-model";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { contractAbiMulti } from "../../contract-abi";
@@ -27,29 +27,31 @@ const contractAddress = "0x06a9FAD3C4CECb75AC5c2Dc96aEbb298318826bc";
 
 
 export const CreateWallet = (props: PcreateWallet) => {
-  const [owners, setOwners] = useState("");
   const [confirmations, setConfirmations] = useState("");
   const [treshold, setTreshold] = useState("");
   const [name, setName] = useState("");
   const [newWalletAddress, setNewWalletAddress] = useState("");
 
   //parametri per la creazione del wallet
-  const debouncedOwners = useDebounce(owners, 500);
   const debouncedConfirmations = useDebounce(confirmations, 500);
   const debouncedTreshold = useDebounce(treshold, 500);
   
 
   const { address, isConnected } = useAccount();
-  const { data: balance } = useBalance({ address });
-  const { connect, connectors } = useConnect();
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    control,
+    formState,
+    getValues,
   } = useForm({
     mode: "onSubmit",
     defaultValues: props.defaultValue,
+  });
+  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
+    control,
+    name: "owners",
   });
 
   //preparo il contratto
@@ -59,11 +61,7 @@ export const CreateWallet = (props: PcreateWallet) => {
     alchemyApiKey
   );
   const contract = new ethers.Contract(contractAddress, contractAbi, provider);
-  const formattedOwners = debouncedOwners[0]
-    .split(",")
-    .map((address) => address.trim());
-
-
+  
   //preparo la funzione per creare il wallet
   const {
     config,
@@ -74,7 +72,7 @@ export const CreateWallet = (props: PcreateWallet) => {
     abi: contractAbi,
     functionName: "createWallet",
     args: [
-      formattedOwners,
+      getValues("owners").map((owner: { address: string }) => owner.address.trim()),
       parseInt(debouncedConfirmations[0]),
       parseInt(debouncedTreshold[0]),
     ],
@@ -144,35 +142,22 @@ export const CreateWallet = (props: PcreateWallet) => {
   }, [isCreateStarted]);
   
 
-  
-
-
   return (
-    <div className="createWallet">
-      {connectors.map((connector) => (
-        <button key={connector.id} onClick={() => connect({ connector })}>
-          {connector.name}
-        </button>
-      ))}
+    <div className="createWallet"><div>
+      <h1>Create Wallet</h1>
 
-      <div>
-        {address && <div>Address: {address}</div>}
-        {balance && <div>Balance: {balance.formatted}</div>}
-      </div>
-
-      <div>
         {isConnected && <p>Proxy Contract Address: {contractAddress}</p>}
         {isCreateWallet && (
-          <p>Creato multisig, transaction hash: {dataContract?.hash}</p>
+          <p>Multisig created, transaction hash: {dataContract?.hash}</p>
         )}
         {isCreateWallet && (
-          <p>Address nuovo contratto multisig creato: {newWalletAddress}</p>
+          <p>Address new multisig: {newWalletAddress}</p>
         )}
       </div>
 
       {isCreateWallet && (
         <div>
-          view tx oon{" "}
+          view tx on{" "}
           <a href={`https://mumbai.polygonscan.com/tx/${dataContract?.hash}`}>
             Polygon Mumbai scan
           </a>
@@ -185,17 +170,24 @@ export const CreateWallet = (props: PcreateWallet) => {
             Insert owners:
           </label>
 
-          <input
-            className="input"
-            id="owners"
-            {...register("owners", {
-              required: { value: true, message: "Field required" },
-              //minLength: { value: 1, message: "Min 1 character allowed" },
-            })}
-            onChange={(e) => setOwners(e.target.value)}
-            value={owners}
-            placeholder="owners comma separated"
-          />
+          <button
+            type="button"
+            className="btn btn-outline-primary"
+            onClick={() => {
+              append({ address: "" });
+            }}
+          >
+            Add Owner
+          </button>
+
+          <div className="mb-2">
+          {fields.map((item, index) => (
+            <div key={item.id} className="input-group my-1">
+              <input placeholder="0x..." className="form-control" {...register(`owners.${index}.address`)} />
+              <button className="btn btn-outline-danger" type="button" onClick={() => remove(index)}>Delete</button>
+            </div>
+          ))}
+          </div>
         </div>
 
         <div className="row">
@@ -204,7 +196,7 @@ export const CreateWallet = (props: PcreateWallet) => {
           </label>
 
           <input
-            className="input"
+            className="form-control"
             id="numConfirmationsRequired"
             {...register("numConfirmationsRequired", {
               required: { value: true, message: "Field required" },
@@ -221,7 +213,7 @@ export const CreateWallet = (props: PcreateWallet) => {
           </label>
 
           <input
-            className="input"
+            className="form-control"
             id="numTreshold"
             {...register("numTreshold", {
               required: { value: true, message: "Field required" },
@@ -238,7 +230,7 @@ export const CreateWallet = (props: PcreateWallet) => {
           </label>
 
           <input
-            className="input"
+            className="form-control"
             id="name"
             {...register("name", {
               required: { value: true, message: "Field required" },
@@ -253,7 +245,7 @@ export const CreateWallet = (props: PcreateWallet) => {
         <div>
           {isConnected && !isCreateWallet && (
             <button
-              className="btn"
+              className="btn btn-primary mt-2"
               type="submit"
               onClick={handleSubmit(onSubmit)}
               disabled={isCreateLoading || isCreateStarted}
