@@ -123,7 +123,7 @@ export const TransferSetting = () => {
               Multisig Wallet Balance: {addressBalance?.formatted.toString()} matic
             </h4>
           </div>
-          <h2>Transfer Matic</h2>
+          <h2>Transfer some Matic</h2>
           <TransactionProposal addressTo={""} amount={""} />
         </>
       )}
@@ -146,7 +146,7 @@ export const TransferSetting = () => {
       {watchType.toString() === "newErc20" && (
         <>
           <div>
-            <h2>Transfer Token</h2>
+            <h2>Transfer some Tokens</h2>
             <TokenTransaction
               addressToTokentransfer={""}
               addressToken={""}
@@ -160,7 +160,7 @@ export const TransferSetting = () => {
         <div className="row">
           {watchType.toString() === "nft" && (
             <>
-              <h2>Transfer NFT</h2>
+              <h2>Transfer an NFT</h2>
               <NFTTransaction
                 addressToNFTtransfer={""}
                 addressNFT={""}
