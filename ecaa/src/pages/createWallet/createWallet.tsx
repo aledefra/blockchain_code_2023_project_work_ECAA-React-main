@@ -90,6 +90,18 @@ export const CreateWallet = (props: PcreateWallet) => {
 
   function onSubmit() {
     if (!write) return;
+
+    //check if there are duplicate owners
+    const owners = getValues("owners").map((owner: { address: string }) => owner.address.trim());
+    for (let i = 0; i < owners.length; i++) {
+      for (let j = i + 1; j < owners.length; j++) {
+        if (owners[i] === owners[j]) {
+          alert("You cannot insert duplicate owners");
+          return;
+        }
+      }
+    }
+
     write();
   }
 
@@ -181,11 +193,13 @@ export const CreateWallet = (props: PcreateWallet) => {
           </button>
 
           <div className="mb-2">
-          {fields.map((item, index) => (
-            <div key={item.id} className="input-group my-1">
-              <input placeholder="0x..." className="form-control" {...register(`owners.${index}.address`)} />
-              <button className="btn btn-outline-danger" type="button" onClick={() => remove(index)}>Delete</button>
-            </div>
+          {fields.map((item, index, array) => (
+            <>
+              <div key={item.id} className="input-group my-1">
+                <input placeholder="0x..." className="form-control" {...register(`owners.${index}.address`)}/>
+                <button className="btn btn-outline-danger" type="button" onClick={() => remove(index)}>Delete</button>
+              </div>
+            </>
           ))}
           </div>
         </div>
