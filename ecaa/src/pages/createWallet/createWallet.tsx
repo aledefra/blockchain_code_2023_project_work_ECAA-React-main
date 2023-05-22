@@ -1,8 +1,6 @@
 import { ethers } from "ethers";
 import {
   useAccount,
-  useConnect,
-  useBalance,
   usePrepareContractWrite,
   useContractWrite,
   useWaitForTransaction,
@@ -37,19 +35,18 @@ export const CreateWallet = (props: PcreateWallet) => {
   const debouncedTreshold = useDebounce(treshold, 500);
   
 
-  const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     control,
-    formState,
     getValues,
   } = useForm({
     mode: "onSubmit",
     defaultValues: props.defaultValue,
   });
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
+  const { fields, append, remove} = useFieldArray({
     control,
     name: "owners",
   });

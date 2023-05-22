@@ -1,9 +1,8 @@
-import { ethers } from "ethers";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { contractAbi } from "../../contractABIs/multisigABI";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
   type PRemoveOwnerProposal = {
     removeOwner: string;
@@ -11,8 +10,6 @@ import { useLocation, useParams } from "react-router-dom";
 
 export const RemoveOwner = (props: PRemoveOwnerProposal) => {
 
-  const location = useLocation();
-  const selectedAddress = location.state?.selectedAddress || "";
   const params = useParams();
   const myAddress = params.address as `0x${string}`;
 
@@ -24,10 +21,7 @@ export const RemoveOwner = (props: PRemoveOwnerProposal) => {
 const {
     register,
     handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm({
+    } = useForm({
     mode: "onSubmit",
     defaultValues: {
       removeOwner: removeOwner.removeOwner,
@@ -63,7 +57,7 @@ return (
  <form>
                 <div className="row">
                   <label className="queryInput" htmlFor="Removeowner">
-                    Insert owner address to remove:
+                    Insert owner's address to remove:
                   </label>
 
                   <input
@@ -79,7 +73,7 @@ return (
                       }))
                     }
                     value={removeOwner.removeOwner}
-                    placeholder="address to remove owner"
+                    placeholder="owner's address to remove"
                   />
                 </div>
 

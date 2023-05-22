@@ -116,7 +116,7 @@ return (
                 <form>
                 <div className="row">
                   <label className="queryInput" htmlFor="TokenTransaction">
-                    Insert recive address ERC-20 token:
+                    Insert receiving address for the ERC-20 token:
                   </label>
 
                   <input
@@ -137,7 +137,7 @@ return (
                 </div>
                 <div className="row">
                   <label className="queryInput" htmlFor="TokenTransaction">
-                    Insert token ERC-20 contract address:
+                    Insert ERC-20 contract address:
                   </label>
 
                   <input
@@ -159,7 +159,7 @@ return (
 
                 <div className="row">
                   <label className="queryInput" htmlFor="TokenTransaction">
-                    Insert send amount:
+                    Insert the amount to send:
                   </label>
 
                   <input

@@ -2,7 +2,7 @@ import { TokenTransaction } from "../proposals/proposal-transferERC20";
 import { NFTTransaction } from "../proposals/proposal-transferERC721";
 import { TransactionProposal } from "../proposals/proposal-transfer";
 import { useForm } from "react-hook-form";
-import { useContractRead, useToken } from "wagmi";
+import { useBalance, useContractRead, useToken } from "wagmi";
 import { useParams } from "react-router-dom";
 import { contractAbiERC20 } from "../../contractABIs/ERC20prova";
 import { contractAbiERC721 } from "../../contractABIs/ERC721prova";
@@ -33,6 +33,15 @@ export const TransferSetting = () => {
       Asset: "",
     },
   });
+  const {
+    data: addressBalance,
+    isError: balanceError,
+    isLoading: balanceLoading,
+  } = useBalance({
+    address: address as `0x${string}`,
+  });
+
+  console.log("addressBalance", addressBalance?.formatted.toString());
 
   const watchType = watch("Asset");
 
@@ -71,29 +80,27 @@ export const TransferSetting = () => {
   return (
     <div>
       <div className="row">
-       
         <select
-          className= "form-select form-select-lg mb-3" aria-label=".form-select-lg example"
+          className="form-select form-select-lg mb-3"
+          aria-label=".form-select-lg example"
           {...register("Asset", {
             required: { value: true, message: "Field required" },
-            
           })}
         >
           <option value="">Choose Assets</option>
           <option value="token">Token</option>
           <option value="nft">NFT</option>
-          
         </select>
       </div>
-  
+
       {watchType && (
         <div className="row">
           {watchType.toString() === "token" && (
             <>
               <div className="row">
                 <select
-                  
-                  className= "form-select form-select-sm" aria-label=".form-select-sm example"
+                  className="form-select form-select-sm"
+                  aria-label=".form-select-sm example"
                   {...register("Asset", {
                     required: { value: true, message: "Field required" },
                   })}
@@ -103,53 +110,52 @@ export const TransferSetting = () => {
                   <option value="savedToked">{nameERC20}</option>
                   <option value="newErc20">New Token</option>
                 </select>
-              </div> 
-          </> 
-          )}
-            </div>
-      )}
-          
-              {watchType.toString() === "matic" && (
-                <>
-                <h1>Balance SmartContract Coin</h1>
-              <div>
-                <h4>Multisig Wallet Balance:</h4>
               </div>
-              <h2>Transfer Coin</h2>
-              <TransactionProposal addressTo={""} amount={""} />
             </>
-              )}
+          )}
+        </div>
+      )}
 
-                 
-  
+      {watchType.toString() === "matic" && (
+        <>
+           <div>
+            <h4>
+              Multisig Wallet Balance: {addressBalance?.formatted.toString()} matic
+            </h4>
+          </div>
+          <h2>Transfer Matic</h2>
+          <TransactionProposal addressTo={""} amount={""} />
+        </>
+      )}
+
       {watchType.toString() === "savedToked" && (
-        <>         
+        <>
           <div>
             <h2>Name : {nameERC20}</h2>
             <h2>Symbol : {symbolERC20}</h2>
             <h2>Decimals : {decimalsERC20}</h2>
           </div>
           <h2>Transfer Token</h2>
-          <TokenTransaction 
+          <TokenTransaction
             addressToTokentransfer={""}
-            addressToken = {""}
+            addressToken={""}
             amountToken={""}
           />
         </>
       )}
       {watchType.toString() === "newErc20" && (
         <>
-    <div>
-      <h2>Transfer Token</h2>
-      <TokenTransaction
-        addressToTokentransfer={""}
-        addressToken={""}
-        amountToken={""}
-      />
-    </div>
+          <div>
+            <h2>Transfer Token</h2>
+            <TokenTransaction
+              addressToTokentransfer={""}
+              addressToken={""}
+              amountToken={""}
+            />
+          </div>
         </>
       )}
-       
+
       {watchType && (
         <div className="row">
           {watchType.toString() === "nft" && (
@@ -161,13 +167,9 @@ export const TransferSetting = () => {
                 idNFT={""}
               />
             </>
-            
           )}
         </div>
-        
       )}
-     
     </div>
-    
   );
 };

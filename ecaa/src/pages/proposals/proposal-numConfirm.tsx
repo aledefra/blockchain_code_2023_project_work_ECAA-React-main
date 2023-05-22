@@ -1,9 +1,9 @@
-import { ethers } from "ethers";
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { contractAbi } from "../../contractABIs/multisigABI";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
   type PChangeNumConfirmationsProposal = {
     numConfirmations: string;
@@ -11,8 +11,6 @@ import { useLocation, useParams } from "react-router-dom";
 
 export const ChangeNumConfirmations = (props: PChangeNumConfirmationsProposal) => {
 
-  const location = useLocation();
-  const selectedAddress = location.state?.selectedAddress || "";
   const params = useParams();
   const myAddress = params.address as `0x${string}`;
 
@@ -25,10 +23,7 @@ export const ChangeNumConfirmations = (props: PChangeNumConfirmationsProposal) =
 const {
     register,
     handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm({
+    } = useForm({
     mode: "onSubmit",
     defaultValues: {
       numConfirmations: numConfirmations.numConfirmations,

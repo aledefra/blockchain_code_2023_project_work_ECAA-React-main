@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { contractAbi } from "../../contractABIs/multisigABI";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { _alchemyKey } from "../../utils/key";
 
   type PNFTTransactionProposal = {
@@ -14,8 +14,6 @@ import { _alchemyKey } from "../../utils/key";
 
 export const NFTTransaction = (props: PNFTTransactionProposal) => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const selectedAddress = location.state?.selectedAddress || "";
   const params = useParams();
   const myAddress = params.address as `0x${string}`;
 
@@ -40,8 +38,7 @@ const contract = new ethers.Contract(contractAddress, contractAbi, provider);
 const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm({
+    } = useForm({
     mode: "onSubmit",
     defaultValues: {
       addressToNFTtransfer: NFTTransaction.addressToNFTtransfer,
@@ -115,7 +112,7 @@ return (
                <form>
                 <div className="row">
                   <label className="queryInput" htmlFor="NFTTransaction">
-                    Insert recive address NFT:
+                    Insert the receiving address for the NFT:
                   </label>
 
                   <input
@@ -136,7 +133,7 @@ return (
                 </div>
                 <div className="row">
                   <label className="queryInput" htmlFor="NFTTransaction">
-                    Insert NFT contract address:
+                    Insert the NFT contract address:
                   </label>
 
                   <input
@@ -158,7 +155,7 @@ return (
 
                 <div className="row">
                   <label className="queryInput" htmlFor="NFTTransaction">
-                    Insert id NFT:
+                    Insert NFT's id to send:
                   </label>
 
                   <input

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { usePrepareContractWrite, useContractWrite } from "wagmi";
 import { contractAbi } from "../../contractABIs/multisigABI";
 
@@ -9,10 +9,6 @@ type PNewOwnerProposal = {
   };
 export const NewOwner = (props: PNewOwnerProposal) => {
 
-
-
-  const location = useLocation();
-    const selectedAddress = location.state?.selectedAddress || "";
     const params = useParams();
     const myAddress = params.address as `0x${string}`;
   
@@ -24,9 +20,7 @@ export const NewOwner = (props: PNewOwnerProposal) => {
   const {
       register,
       handleSubmit,
-      setValue,
-      watch,
-      formState: { errors },
+
     } = useForm({
       mode: "onSubmit",
       defaultValues: {
@@ -61,7 +55,7 @@ export const NewOwner = (props: PNewOwnerProposal) => {
   <form>
                   <div className="row">
                     <label className="queryInput" htmlFor="NewOwner">
-                      Insert address new Owner:
+                      Insert a new owner's address:
                     </label>
   
                     <input

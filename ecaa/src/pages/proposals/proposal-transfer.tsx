@@ -114,7 +114,7 @@ const provider = new ethers.providers.AlchemyProvider(
     <form>
                     <div className="row">
                       <label className="queryInput" htmlFor="owners">
-                        Insert addressTo:
+                        Insert receiving address:
                       </label>
     
                       <input
@@ -130,13 +130,13 @@ const provider = new ethers.providers.AlchemyProvider(
                           }))
                         }
                         value={transactionProposal.addressTo}
-                        placeholder="Transaction"
+                        placeholder="receiving address"
                       />
                     </div>
     
                     <div className="row">
                       <label className="queryInput" htmlFor="valueTransaction">
-                        Insert value Transaction:
+                        Insert the amount of matic to send:
                       </label>
     
                       <input
@@ -152,7 +152,7 @@ const provider = new ethers.providers.AlchemyProvider(
                           }))
                         }
                         value={transactionProposal.amount}
-                        placeholder="value-transaction"
+                        placeholder="amount"
                       />
                     </div>
     
