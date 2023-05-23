@@ -21,8 +21,8 @@ type PcreateWallet = {
 
 const contractAbi = contractAbiMulti;
 
-const proxyContractAddress = "0x1C6B7FB1814c00fDeB4662611FA01fcCe4dD3c57";
-const LogicContractAddress = "0xBedE777b758EFDcA27dc1Ee09022366844658135";
+const proxyContractAddress = "0x5d5963918eB969531Cdaccb9D8374208f7c371b2";
+const LogicContractAddress = "0xb27B8640CBccDa874182A9001bcCfA39B154C227";
 
 
 export const CreateWallet = (props: PcreateWallet) => {
