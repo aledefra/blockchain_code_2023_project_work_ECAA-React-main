@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import { useState, useEffect } from "react";
 import { _alchemyKey } from "../../utils/key";
 
+
 const provider = new ethers.providers.AlchemyProvider(
   "maticmum",
 _alchemyKey
@@ -14,7 +15,8 @@ export type SavedContract = {
 };
 
 export const MyWallets = () => {
-	
+
+
 	const [contracts, setContracts] = useState<SavedContract[]>([]);
 	const [walletToAdd, setWalletToAdd] = useState<string>("");
 	const [walletName, setWalletName] = useState<string>("");
@@ -29,12 +31,16 @@ export const MyWallets = () => {
 			alert("Wallet already saved");
 			return;
 		}
+		
 
 	
     	// check if wallet is a multisig wallet
-		const hexString =
-        "0x363d3d373d3d3d363d73f0049d779ef97adece94863ed204c243f3dedebe5af43d82803e903d91602b57fd5bf3";
-		if(await provider.getCode(walletToAdd) !== hexString) {
+		
+
+
+        const hexKey: string =
+        "0x363d3d373d3d3d363d73bede777b758efdca27dc1ee090223668446581355af43d82803e903d91602b57fd5bf3";
+		if(await provider.getCode(walletToAdd) !== hexKey) {
 	    alert("The address you entered is not a multisig wallet address");
         return;
 

@@ -21,8 +21,8 @@ type PcreateWallet = {
 
 const contractAbi = contractAbiMulti;
 
-const contractAddress = "0x9B7a0A1a6B819f86869850eA807DC8eb5a39752e";
-const LogicContractAddress = "0xf0049d779ef97adece94863ed204c243f3dedebe";
+const proxyContractAddress = "0x1C6B7FB1814c00fDeB4662611FA01fcCe4dD3c57";
+const LogicContractAddress = "0xBedE777b758EFDcA27dc1Ee09022366844658135";
 
 
 export const CreateWallet = (props: PcreateWallet) => {
@@ -58,7 +58,7 @@ export const CreateWallet = (props: PcreateWallet) => {
     "maticmum",
     alchemyApiKey
   );
-  const contract = new ethers.Contract(contractAddress, contractAbi, provider);
+  const contract = new ethers.Contract(proxyContractAddress, contractAbi, provider);
   
   //preparo la funzione per creare il wallet
   const {
@@ -66,15 +66,16 @@ export const CreateWallet = (props: PcreateWallet) => {
     error: prepareError,
     isError: isPrepareError,
   } = usePrepareContractWrite({
-    address: contractAddress,
+    address: proxyContractAddress,
     abi: contractAbi,
     functionName: "createWallet",
     args: [
-      getValues("owners").map((owner: { address: string }) => owner.address.trim()),
+      getValues("owners").map((owner: { address: string }) =>
+        owner.address.trim()
+      ),
       parseInt(debouncedConfirmations[0]),
       parseInt(debouncedTreshold[0]),
     ],
-    
   });
 
   const {
@@ -157,8 +158,10 @@ export const CreateWallet = (props: PcreateWallet) => {
       <div>
         <h1>Create Wallet</h1>
 
-        {isConnected && <p>Proxy Contract Address: {contractAddress}</p>}
-        {isConnected && <p>Multisig Logic Contract Address: {LogicContractAddress}</p>}
+        {isConnected && <p>Proxy Contract Address: {proxyContractAddress}</p>}
+        {isConnected && (
+          <p>Multisig Logic Contract Address: {LogicContractAddress}</p>
+        )}
         {isCreateWallet && (
           <p>Multisig created, transaction hash: {dataContract?.hash}</p>
         )}
