@@ -16,7 +16,6 @@ export type SavedContract = {
 
 export const MyWallets = () => {
 
-
 	const [contracts, setContracts] = useState<SavedContract[]>([]);
 	const [walletToAdd, setWalletToAdd] = useState<string>("");
 	const [walletName, setWalletName] = useState<string>("");
@@ -39,7 +38,7 @@ export const MyWallets = () => {
 
 
         const hexKey: string =
-        "0x363d3d373d3d3d363d73bede777b758efdca27dc1ee090223668446581355af43d82803e903d91602b57fd5bf3";
+          "0x363d3d373d3d3d363d73b27b8640cbccda874182a9001bccfa39b154c2275af43d82803e903d91602b57fd5bf3";
 		if(await provider.getCode(walletToAdd) !== hexKey) {
 	    alert("The address you entered is not a multisig wallet address");
         return;

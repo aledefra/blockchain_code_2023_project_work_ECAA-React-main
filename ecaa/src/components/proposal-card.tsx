@@ -123,7 +123,7 @@ function onSubmitRevoke() {
 const {
   config: prepareImHereConfig,
   error: errorImHerePrepare,
-  isError : isErrorImHere,
+  isError : isErrorImHerePrepare,
 } = usePrepareContractWrite({
   address: fixedAddress,
   abi: contractAbi,
@@ -136,6 +136,7 @@ const {
   isLoading: isLoadingImHere,
   data: dataImHere,
   error: errorImHere,
+  isError: isErrorImHere,
   write: writeImHere,
 } = useContractWrite(prepareImHereConfig);
 function onSubmitImHere() {
@@ -449,8 +450,8 @@ useEffect(() => {
             </button>
 
 
-            {errorImHere && <p className="error">{errorImHere.message}</p>}
-            {errorImHerePrepare && <p className="error">{(errorImHerePrepare as any).reason}</p>}
+            {isErrorImHere && <p className="error">{errorImHere?.message}</p>}
+            {isErrorImHerePrepare && <p className="error">{(errorImHerePrepare as any).reason}</p>}
           </div>
         )}
         
