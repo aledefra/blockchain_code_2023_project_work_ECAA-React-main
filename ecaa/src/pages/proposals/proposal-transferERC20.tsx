@@ -1,18 +1,16 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useContractWrite, usePrepareContractWrite } from "wagmi";
+import { set, useForm } from "react-hook-form";
+import { useContractWrite, usePrepareContractWrite, useToken } from "wagmi";
 import { contractAbi } from "../../contractABIs/multisigABI";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { _alchemyKey } from "../../utils/key";
 
-  type PTokenTransactionProposal = {
-    addressToTokentransfer: string;
-    addressToken: string;
-    amountToken: string;
-  };
 
-export const TokenTransaction = (props: PTokenTransactionProposal) => {
+
+  
+
+export const TokenTransaction = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const selectedAddress = location.state?.selectedAddress || "";
@@ -30,23 +28,22 @@ const contract = new ethers.Contract(contractAddress, contractAbi, provider);
 
      //Propose token transaction 6
 
-  const [tokenTransaction, setTokenTransaction] =
-    useState<PTokenTransactionProposal>({
-      addressToTokentransfer: "",
-      addressToken: "",
-      amountToken: "",
-    });
+  
+
+    const [addressToTokentransfer, setAddressToTokentransfer] = useState("");
+    const [addressToken, setAddressToken] = useState("");
+    const [amountToken, setAmountToken] = useState("");
 
 const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    mode: "onSubmit",
+    mode: "onChange",
     defaultValues: {
-      addressToTokentransfer: tokenTransaction.addressToTokentransfer,
-      addressToken: tokenTransaction.addressToken,
-      amountToken: tokenTransaction.amountToken,
+      addressToTokentransfer: addressToTokentransfer,
+      addressToken: addressToken,
+      amountToken: amountToken,
     },
   });
 
@@ -61,11 +58,19 @@ const {
     abi: contractAbi,
     functionName: "proposeTokenTransaction",
     args: [
-      tokenTransaction.addressToTokentransfer,
-      tokenTransaction.addressToken,
-      parseInt(tokenTransaction.amountToken),
+      addressToTokentransfer,
+      addressToken,
+      amountToken,
+      
     ],
   });
+  
+
+  
+  const {data : dataToken} = useToken({
+    address: addressToken as `0x${string}`,
+    chainId: 137,
+  })
 
   const {
     isSuccess: isStartedCreateTokenTransactionProposal,
@@ -78,7 +83,21 @@ const {
   function onSubmitTokenTransaction() {
     if (!writeForTokenTransaction) return;
     writeForTokenTransaction();
+
+    if (addressToken) {
+      const savedNewToken = JSON.parse(
+        localStorage.getItem("token") || "[]"
+      );
+      const newToken = { address: addressToken};
+      localStorage.setItem("token", JSON.stringify([...savedNewToken, newToken]));
+
+      newToken.address = addressToken;
+      
+      
+    }
   }
+  
+  
 //reload and navigate to wallet page
 
 const [isExecuted, setIsExecuted] = useState(false);
@@ -111,6 +130,7 @@ useEffect(() => {
 }, [isExecuted]);
 
 
+
 return (
 
                 <form>
@@ -126,12 +146,9 @@ return (
                       required: { value: true, message: "Field required" },
                     })}
                     onChange={(e) =>
-                      setTokenTransaction((tokenTransaction) => ({
-                        ...tokenTransaction,
-                        addressToTokentransfer: e.target.value,
-                      }))
+                      setAddressToTokentransfer(e.target.value) 
                     }
-                    value={tokenTransaction.addressToTokentransfer}
+                    value={addressToTokentransfer}
                     placeholder="address to send token"
                   />
                 </div>
@@ -147,12 +164,9 @@ return (
                       required: { value: true, message: "Field required" },
                     })}
                     onChange={(e) =>
-                      setTokenTransaction((tokenTransaction) => ({
-                        ...tokenTransaction,
-                        addressToken: e.target.value,
-                      }))
+                      setAddressToken(e.target.value)    
                     }
-                    value={tokenTransaction.addressToken}
+                    value={addressToken}
                     placeholder="contract address token"
                   />
                 </div>
@@ -169,15 +183,22 @@ return (
                       required: { value: true, message: "Field required" },
                     })}
                     onChange={(e) =>
-                      setTokenTransaction((tokenTransaction) => ({
-                        ...tokenTransaction,
-                        amountToken: e.target.value,
-                      }))
+                      setAmountToken(e.target.value)
                     }
-                    value={tokenTransaction.amountToken}
+                    value={amountToken}
                     placeholder="amount token send"
                   />
                 </div>
+                
+                <div className="row">
+                  <label className="queryInput" htmlFor="TokenTransaction">
+                    View name token:
+                  </label>
+                  
+                    {dataToken?.name}
+                    </div>
+                    
+                  
 
                 <div>
                   <button
