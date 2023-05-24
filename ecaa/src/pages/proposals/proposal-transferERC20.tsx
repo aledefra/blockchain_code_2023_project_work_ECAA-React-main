@@ -88,7 +88,7 @@ const {
       const savedNewToken = JSON.parse(
         localStorage.getItem("token") || "[]"
       );
-      const newToken = { address: addressToken};
+      const newToken = { address: addressToken, name: dataToken?.name};
       localStorage.setItem("token", JSON.stringify([...savedNewToken, newToken]));
 
       newToken.address = addressToken;

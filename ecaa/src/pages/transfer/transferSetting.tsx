@@ -42,23 +42,7 @@ export const TransferSetting = () => {
 
   const watchType = watch("Asset");
 
-  const [myToken, setMyToken] = useState<SavedToken[]>([]);
-  useEffect(() => {
-		setMyToken(JSON.parse(localStorage.getItem("token") || "[]"));
-	}, []);
-
-  const removeToken = (addressToRemove: string) => {
-		const newToken = myToken.filter(
-			(c) => c.address !== addressToRemove
-		);
-		localStorage.setItem("token", JSON.stringify(newToken));
-		setMyToken(newToken);
-	}
-
-  const sendToken = (tokenAddress: string) => {
-    
-    console.log("Selected Token Address:", tokenAddress);
-  };
+  
           
   return (
     <div>
@@ -127,46 +111,10 @@ export const TransferSetting = () => {
 
        {watchType.toString() === "savedToked" && (
         <>
-          <div className="MyToken">
-			<h1>My Token</h1>
-			<div>
-				<table className="table table-striped">
-					<thead>
-						<tr>
-							<th>Name </th>
-							<th>Address</th>
-							<th />
-						</tr>
-					</thead>
-					<tbody>
-						{myToken.map((myToken) => (
-							<tr key={myToken.address}>
-								<td>{myToken.name}</td>
-								<td>{myToken.address}</td>
-                <td>
-                <button
-                      className="btn btn-outline-primary ms-2"
-                      onClick={() => sendToken(myToken.address)}
-                    >
-                      Send
-                    </button>
-										
-									<button
-										className="btn btn-outline-danger ms-2"
-										onClick={() =>
-											removeToken(myToken.address)
-										}
-									>
-										Remove
-									</button>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
+        <div>  
           <TokenSavedTransaction 
           />
-      </div>
+     
       </div>
         </>
       )}

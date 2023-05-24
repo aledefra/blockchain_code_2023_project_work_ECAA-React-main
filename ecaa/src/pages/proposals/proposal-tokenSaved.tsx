@@ -12,8 +12,6 @@ export type SavedToken = {
 	name: string;
 };
 
-  
-
 export const TokenSavedTransaction = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,6 +35,7 @@ const contract = new ethers.Contract(contractAddress, contractAbi, provider);
     const [addressToTokentransfer, setAddressToTokentransfer] = useState("");
     const [myToken, setMyToken] = useState<SavedToken[]>([]);
     const [amountToken, setAmountToken] = useState("");
+    const [selectedToken, setSelectedToken] = useState("");
 
     useEffect(() => {
 		setMyToken(JSON.parse(localStorage.getItem("token") || "[]"));
@@ -46,15 +45,17 @@ const contract = new ethers.Contract(contractAddress, contractAbi, provider);
 const {
     register,
     handleSubmit,
+
     formState: { errors },
   } = useForm({
     mode: "onChange",
     defaultValues: {
       addressToTokentransfer: addressToTokentransfer,
-      addressToken: myToken[0]?.address,
+      myToken: myToken,
       amountToken: amountToken,
     },
   });
+
 
 
 //Propose Token Transaction 6
@@ -68,9 +69,8 @@ const {
     functionName: "proposeTokenTransaction",
     args: [
       addressToTokentransfer,
-      myToken,
-      amountToken,
-      
+      selectedToken,
+      parseInt(amountToken),     
     ],
   });
 
@@ -86,6 +86,7 @@ const {
   function onSubmitTokenTransaction() {
     if (!writeForTokenTransaction) return;
     writeForTokenTransaction();
+    
   }
   
   
@@ -121,12 +122,42 @@ useEffect(() => {
 }, [isExecuted]);
 
 
+//save token
 
+  const removeToken = (addressToRemove: string) => {
+		const newToken = myToken.filter(
+			(c) => c.address !== addressToRemove
+		);
+		localStorage.setItem("token", JSON.stringify(newToken));
+		setMyToken(newToken);
+	}
 
-
+  console.log("token selezionato:", selectedToken)
 return (
 
-                <form>
+    
+<form>
+<label className="queryInput" htmlFor="selectToken">
+  Select Token:
+</label>
+<select
+  className="form-control"
+  id="selectToken"
+  {...register("myToken")}
+  value={selectedToken}
+  onChange={(e) => setSelectedToken(e.target.value)}
+>
+  <option value="">Choose a token</option>
+  {myToken.map((myToken) => (
+    <option key={myToken.address} value={myToken.address}>
+      {myToken.name}
+    </option>
+    
+    
+  ))}
+</select>
+
+                
                 <div className="row">
                   <label className="queryInput" htmlFor="TokenTransaction">
                     Insert receiving address for the ERC-20 token:
@@ -189,7 +220,5 @@ return (
                   </div>
                 )}
               </form>
-
 )
-
 }
