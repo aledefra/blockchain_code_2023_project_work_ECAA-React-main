@@ -1,10 +1,11 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useContractWrite, usePrepareContractWrite } from "wagmi";
+import { useContractRead, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { contractAbi } from "../../contractABIs/multisigABI";
 import { useNavigate, useParams } from "react-router-dom";
 import { _alchemyKey } from "../../utils/key";
+import { erc721ABI } from 'wagmi'
 
   type PNFTTransactionProposal = {
     addressToNFTtransfer: string;
@@ -17,23 +18,26 @@ export const NFTTransaction = (props: PNFTTransactionProposal) => {
   const params = useParams();
   const myAddress = params.address as `0x${string}`;
 
-  //Propose NFT transaction 7
+  const [addressToNFTtransfer, setAddressToNFTtransfer] = useState("");
+  const [addressNFT, setAddressNFT] = useState("");
+  const [idNFT, setIdNFT] = useState("");
 
-  const [NFTTransaction, setNFTTransaction] =
-    useState<PNFTTransactionProposal>({
-      addressToNFTtransfer: "",
-      addressNFT: "",
-      idNFT: "",
-    });
 
-const contractAddress = myAddress; 
 const alchemyApiKey = _alchemyKey;
 const provider = new ethers.providers.AlchemyProvider(
   "maticmum",
   alchemyApiKey
 ); 
 
-const contract = new ethers.Contract(contractAddress, contractAbi, provider);
+//NFT name
+const {
+  data: dataNFT,
+}  = useContractRead({
+  address: addressNFT as `0x${string}` ,
+  abi: erc721ABI,
+  functionName: "name",
+})
+
 
 const {
     register,
@@ -41,14 +45,13 @@ const {
     } = useForm({
     mode: "onSubmit",
     defaultValues: {
-      addressToNFTtransfer: NFTTransaction.addressToNFTtransfer,
-      addressNFT: NFTTransaction.addressNFT,
-      idNFT: NFTTransaction.idNFT,
+      addressToNFTtransfer: addressToNFTtransfer,
+      addressNFT: addressNFT,
+      idNFT: idNFT,
     },
   });
 
-
-//Propose NFT Transaction 7
+//prepare Write for NFT transaction
   const {
     config: configNFTTransaction,
     error: prepareErrorNFTTransaction,
@@ -58,16 +61,16 @@ const {
     abi: contractAbi,
     functionName: "proposeNFTTransaction",
     args: [
-      NFTTransaction.addressToNFTtransfer,
-      NFTTransaction.addressNFT,
-      parseInt(NFTTransaction.idNFT),
+      addressToNFTtransfer,
+      addressNFT,
+      idNFT, 
     ],
   });
 
+  //write for NFT transaction
   const {
     isSuccess: isStartedCreateNFTTransactionProposal,
     isLoading: isCreateNFTTransactionProposalLoading,
-    data: dataProposalNFTTransaction,
     error: errorNFTTransaction,
     write: writeForNFTTransaction,
   } = useContractWrite(configNFTTransaction);
@@ -75,7 +78,9 @@ const {
   function onSubmitNFTtransaction() {
     if (!writeForNFTTransaction) return;
     writeForNFTTransaction();
+   
   }
+
 //reload and navigate to wallet page
 
 const [isExecuted, setIsExecuted] = useState(false);
@@ -122,12 +127,10 @@ return (
                       required: { value: true, message: "Field required" },
                     })}
                     onChange={(e) =>
-                      setNFTTransaction((NFTTransaction) => ({
-                        ...NFTTransaction,
-                        addressToNFTtransfer: e.target.value,
-                      }))
-                    }
-                    value={NFTTransaction.addressToNFTtransfer}
+                      
+                      setAddressToNFTtransfer(e.target.value) 
+                      }
+                      value={addressToNFTtransfer}
                     placeholder="address to send token"
                   />
                 </div>
@@ -143,12 +146,9 @@ return (
                       required: { value: true, message: "Field required" },
                     })}
                     onChange={(e) =>
-                      setNFTTransaction((NFTTransaction) => ({
-                        ...NFTTransaction,
-                        addressNFT: e.target.value,
-                      }))
+                     setAddressNFT(e.target.value)
                     }
-                    value={NFTTransaction.addressNFT}
+                    value={addressNFT}
                     placeholder="contract address NFT"
                   />
                 </div>
@@ -165,14 +165,14 @@ return (
                       required: { value: true, message: "Field required" },
                     })}
                     onChange={(e) =>
-                      setNFTTransaction((NFTTransaction) => ({
-                        ...NFTTransaction,
-                        idNFT: e.target.value,
-                      }))
+                      setIdNFT(e.target.value)
                     }
-                    value={NFTTransaction.idNFT}
+                    value={idNFT}
                     placeholder="id NFT send"
                   />
+                </div>
+                <div>
+                  NFT name : {dataNFT}
                 </div>
 
                 <div>

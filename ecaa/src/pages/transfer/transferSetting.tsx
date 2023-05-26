@@ -1,19 +1,10 @@
 import { TokenTransaction } from "../proposals/proposal-transferERC20";
 import { NFTTransaction } from "../proposals/proposal-transferERC721";
 import { TransactionProposal } from "../proposals/proposal-transfer";
-import { set, useForm } from "react-hook-form";
-import { useBalance, useContractRead, useToken } from "wagmi";
+import { useForm } from "react-hook-form";
+import { useBalance } from "wagmi";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { SavedToken, TokenSavedTransaction } from "../proposals/proposal-tokenSaved";
-
-
-type PAddressERC20 = {
-  addressERC20: string;
-};
-type PAddressERC721 = {
-  addressERC721: string;
-};
+import { TokenSavedTransaction } from "../proposals/proposal-tokenSaved";
 
 
 export const TransferSetting = () => {
@@ -41,9 +32,7 @@ export const TransferSetting = () => {
   console.log("addressBalance", addressBalance?.formatted.toString());
 
   const watchType = watch("Asset");
-
-  
-          
+        
   return (
     <div>
       <div className="row">
@@ -94,16 +83,14 @@ export const TransferSetting = () => {
           <TransactionProposal addressTo={""} amount={""} />
         </>
       )}
-
-     
+   
       {watchType.toString() === "newErc20" && (
         <>
           <div>
             <h2>Transfer some Tokens</h2>
             <TokenTransaction 
             
-            />
-              
+            />              
             
           </div>
         </>
@@ -119,7 +106,6 @@ export const TransferSetting = () => {
         </>
       )}
       
-
       {watchType && (
         <div className="row">
           {watchType.toString() === "nft" && (
@@ -134,6 +120,7 @@ export const TransferSetting = () => {
           )}
         </div>
       )}
+      
     </div>
   );
 };
