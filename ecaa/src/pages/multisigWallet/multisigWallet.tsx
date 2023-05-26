@@ -71,14 +71,7 @@ export const MultisigWallet = () => {
 			>
 				Owners' settings
 			</button>
-			<button
-				className="btn btn-primary"
-				onClick={() => {
-					navigate(`/wallets/${address}/proposals`);
-				}}
-			>
-				Create Proposal
-			</button>
+			
 
 			{numberofProposals !== 0 && (
 				<div>
