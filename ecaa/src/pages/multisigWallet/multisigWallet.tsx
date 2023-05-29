@@ -41,7 +41,7 @@ export const MultisigWallet = () => {
 	return (
 		<div className="MyMultisig">
 			<h4>Multisig Wallet Balance:</h4>
-      <h1>{ethers.utils.formatEther(addressBalance?.value ?? "")} MATIC</h1>
+      <h1>{ethers.utils.formatEther(addressBalance?.value ?? "0")} MATIC</h1>
 
       <div className="mb-3">
         <a
