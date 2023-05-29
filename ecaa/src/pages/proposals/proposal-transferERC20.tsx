@@ -32,7 +32,7 @@ const contract = new ethers.Contract(contractAddress, contractAbi, provider);
 
     const [addressToTokentransfer, setAddressToTokentransfer] = useState("");
     const [addressToken, setAddressToken] = useState("");
-    const [amountToken, setAmountToken] = useState("");
+    const [amountToken, setAmountToken] = useState("0" || null);
 
 const {
     register,
@@ -47,7 +47,12 @@ const {
     },
   });
 
+const { data: dataToken } = useToken({
+  address: addressToken as `0x${string}`,
+  chainId: 137,
+});
 
+console.log("DECIMALS",dataToken?.decimals);
 //Propose Token Transaction 6
   const {
     config: configTokenTransaction,
@@ -60,17 +65,19 @@ const {
     args: [
       addressToTokentransfer,
       addressToken,
-      amountToken,
-      
+      ethers.utils.parseUnits(
+        amountToken?.toString() || "0",
+        dataToken?.decimals.toString() 
+      ),
     ],
+    //ethers.utils.parseUnits(amountToken.toString(),dataToken?.decimals.toString()).toString(),
   });
   
 
   
-  const {data : dataToken} = useToken({
-    address: addressToken as `0x${string}`,
-    chainId: 137,
-  })
+  
+
+  console.log(dataToken);
 
   const {
     isSuccess: isStartedCreateTokenTransactionProposal,
