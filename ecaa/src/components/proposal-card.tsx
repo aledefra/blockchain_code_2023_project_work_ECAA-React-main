@@ -266,7 +266,7 @@ useEffect(() => {
         ['address', 'uint256'],
         proposal?.proposalData ?? ""
       );
-      return <p>Send {ethers.utils.formatEther(value)} to address {to}</p>
+      return <p>Send {ethers.utils.formatEther(value)} Matic to address {to}</p>
     }
 
     if (proposal?.proposalType === ProposalTypeEnum.NewOwner) {
