@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { useContractRead, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { contractAbi } from "../../contractABIs/multisigABI";
 import { useNavigate, useParams } from "react-router-dom";
-import { _alchemyKey } from "../../utils/key";
 import { erc721ABI } from 'wagmi'
 
   type PNFTTransactionProposal = {
@@ -23,7 +22,7 @@ export const NFTTransaction = (props: PNFTTransactionProposal) => {
   const [idNFT, setIdNFT] = useState("");
 
 
-const alchemyApiKey = _alchemyKey;
+const alchemyApiKey = process.env.REACT_APP_ALCHEMY_API_KEY;
 const provider = new ethers.providers.AlchemyProvider(
   "maticmum",
   alchemyApiKey

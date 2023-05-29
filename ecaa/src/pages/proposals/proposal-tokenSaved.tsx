@@ -1,10 +1,9 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { set, useForm } from "react-hook-form";
-import { useContractWrite, usePrepareContractWrite, useToken } from "wagmi";
+import { useForm } from "react-hook-form";
+import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { contractAbi } from "../../contractABIs/multisigABI";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { _alchemyKey } from "../../utils/key";
 
 
 export type SavedToken = {
@@ -14,19 +13,16 @@ export type SavedToken = {
 
 export const TokenSavedTransaction = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const selectedAddress = location.state?.selectedAddress || "";
   const params = useParams();
   const myAddress = params.address as `0x${string}`;
 
 const contractAddress = myAddress; 
-const alchemyApiKey = _alchemyKey;
+const alchemyApiKey = process.env.REACT_APP_ALCHEMY_API_KEY;
 const provider = new ethers.providers.AlchemyProvider(
   "maticmum",
   alchemyApiKey
 ); 
 
-const contract = new ethers.Contract(contractAddress, contractAbi, provider);
 
      //Propose token transaction 6
 
@@ -45,8 +41,6 @@ const contract = new ethers.Contract(contractAddress, contractAbi, provider);
 const {
     register,
     handleSubmit,
-
-    formState: { errors },
   } = useForm({
     mode: "onChange",
     defaultValues: {
@@ -78,7 +72,6 @@ const {
   const {
     isSuccess: isStartedCreateTokenTransactionProposal,
     isLoading: isCreateTokenTransactionProposalLoading,
-    data: dataProposalTokenTransaction,
     error: errorTokenTransaction,
     write: writeForTokenTransaction,
   } = useContractWrite(configTokenTransaction);

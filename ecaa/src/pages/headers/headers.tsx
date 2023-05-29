@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useAccount, useConnect } from "wagmi";
 
 export const Header = () => {
-	const { address, isConnected } = useAccount();
+	const { isConnected } = useAccount();
 	const { connect, connectors } = useConnect();
 
 	return (

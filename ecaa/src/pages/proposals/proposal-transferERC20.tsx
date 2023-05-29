@@ -1,10 +1,9 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useContractWrite, usePrepareContractWrite, useToken } from "wagmi";
 import { contractAbi } from "../../contractABIs/multisigABI";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { _alchemyKey } from "../../utils/key";
 
 
 
@@ -18,7 +17,7 @@ export const TokenTransaction = () => {
   const myAddress = params.address as `0x${string}`;
 
 const contractAddress = myAddress; 
-const alchemyApiKey = _alchemyKey;
+const alchemyApiKey = process.env.REACT_APP_ALCHEMY_API_KEY;
 const provider = new ethers.providers.AlchemyProvider(
   "maticmum",
   alchemyApiKey
