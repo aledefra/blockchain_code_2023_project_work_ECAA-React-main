@@ -31,7 +31,7 @@ const provider = new ethers.providers.AlchemyProvider(
       const [transactionProposal, setTransactionProposal] =
         useState<PTransactionProposal>({
           addressTo: "",
-          amount: "0",
+          amount: "0" || null ,
         });
     
     const contract = new ethers.Contract(contractAddress, contractAbi, provider);
@@ -60,7 +60,7 @@ const provider = new ethers.providers.AlchemyProvider(
         address: myAddress,
         abi: contractAbi,
         functionName: "proposeTransaction",
-        args: [transactionProposal.addressTo, ethers.utils.parseUnits(transactionProposal.amount)],
+        args: [transactionProposal.addressTo, ethers.utils.parseUnits(transactionProposal.amount || "0")],
       });
     
       const {

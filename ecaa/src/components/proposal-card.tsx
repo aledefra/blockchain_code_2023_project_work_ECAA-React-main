@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { IProposal } from "../model/proposalType-model";
 import { useNavigate, useParams } from "react-router-dom";
-import { useContractRead, useContractWrite, usePrepareContractWrite } from "wagmi";
+import { useContractRead, useContractWrite, usePrepareContractWrite, useToken } from "wagmi";
 
 
 type Props = {
@@ -256,7 +256,6 @@ useEffect(() => {
 }, [isExecuted]);
 
 
-
 //decode proposal data
 
   const decodedData = () => {
@@ -266,7 +265,7 @@ useEffect(() => {
         ['address', 'uint256'],
         proposal?.proposalData ?? ""
       );
-      return <p>Send {ethers.utils.formatEther(value)} to address {to}</p>
+      return <p>Send {ethers.utils.formatEther(value)} Matic to address {to}</p>
     }
 
     if (proposal?.proposalType === ProposalTypeEnum.NewOwner) {
@@ -323,6 +322,7 @@ useEffect(() => {
         ['address', 'address', 'uint256'],
         proposal?.proposalData ?? ""
       );
+      
       return <p>Send {value.toString()} of token {tokenAddress} to address {to}</p>
     }
 
