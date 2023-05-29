@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { contractAbi } from "../../contractABIs/multisigABI";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { _alchemyKey } from "../../utils/key";
 
 type PTransactionProposal = {
     addressTo: string;
@@ -20,7 +19,7 @@ const myAddress = params.address as `0x${string}`;
 const navigate = useNavigate();
 
 const contractAddress = myAddress; 
-const alchemyApiKey = _alchemyKey;
+const alchemyApiKey = process.env.REACT_APP_ALCHEMY_API_KEY;
 const provider = new ethers.providers.AlchemyProvider(
   "maticmum",
   alchemyApiKey
@@ -38,8 +37,6 @@ const provider = new ethers.providers.AlchemyProvider(
       const {
         register,
         handleSubmit,
-        setValue,
-        watch,
         formState: { errors },
       } = useForm({
         mode: "onSubmit",

@@ -32,10 +32,6 @@ export const AppRoutes = () => {
 					path="new"
 					element={<CreateWallet defaultValue={defaultInitialize} />}
 				/>
-				{/* <Route
-            path="proposals"
-            element={<CreateProposal {...defaultValueProposal} />}
-          /> */}
 			</Route>
 			<Route path="*" element={<NotFound />} />
 		</Routes>

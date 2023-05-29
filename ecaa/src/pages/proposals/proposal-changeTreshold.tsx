@@ -1,15 +1,14 @@
-import { ethers } from "ethers";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { contractAbi } from "../../contractABIs/multisigABI";
 import { useParams } from "react-router-dom";
 
-   type PChangeTresholdProposal = {
-    treshold: string;
+   type PChangeThresholdProposal = {
+    threshold: string;
   };
 
-export const ChangeTreshold = (props: PChangeTresholdProposal) => {
+export const ChangeThreshold = (props: PChangeThresholdProposal) => {
 
 
   const params = useParams();
@@ -17,8 +16,8 @@ export const ChangeTreshold = (props: PChangeTresholdProposal) => {
 
   //Proposal Change Treshold 3
 
-  const [treshold, setTreshold] = useState<PChangeTresholdProposal>({
-    treshold: "",
+  const [threshold, setThreshold] = useState<PChangeThresholdProposal>({
+    threshold: "",
   });
 const {
     register,
@@ -26,57 +25,57 @@ const {
   } = useForm({
     mode: "onSubmit",
     defaultValues: {
-      treshold: treshold.treshold,
+      threshold: threshold.threshold,
     },
   });
 
 //Propose Change Treshold 3
   const {
-    config: configChangeTreshold,
-    error: prepareErrorChangeTreshold,
-    isError: isPrepareErrorChangeTreshold,
+    config: configChangeThreshold,
+    error: prepareErrorChangeThreshold,
+    isError: isPrepareErrorChangeThreshold,
   } = usePrepareContractWrite({
     address: myAddress,
     abi: contractAbi,
     functionName: "proposeChangeThreshold",
-    args: [treshold.treshold],
+    args: [threshold.threshold],
   });
 
   const {
-    isSuccess: isCreateChangeTresholdProposal,
-    isLoading: isCreateChangeTresholdProposalLoading,
-    data: dataProposalChangeTreshold,
-    error: errorChangeTreshold,
-    write: writeForChangeTreshold,
-  } = useContractWrite(configChangeTreshold);
+    isSuccess: isCreateChangeThresholdProposal,
+    isLoading: isCreateChangeThresholdProposalLoading,
+    data: dataProposalChangeThreshold,
+    error: errorChangeThreshold,
+    write: writeForChangeThreshold,
+  } = useContractWrite(configChangeThreshold);
 
-  function onSubmitChangeTreshold() {
-    if (!writeForChangeTreshold) return;
-    writeForChangeTreshold();
+  function onSubmitChangeThreshold() {
+    if (!writeForChangeThreshold) return;
+    writeForChangeThreshold();
   }
 
 
 return (
  <form>
                 <div className="row">
-                  <label className="queryInput" htmlFor="ChangeTreshold">
-                    Insert number of new treshold:
+                  <label className="queryInput" htmlFor="ChangeThreshold">
+                    Insert number of new threshold:
                   </label>
 
                   <input
                     className="ProposalType form-control"
-                    id="ChangeTreshold"
-                    {...register("treshold", {
+                    id="ChangeThreshold"
+                    {...register("threshold", {
                       required: { value: true, message: "Field required" },
                     })}
                     onChange={(e) =>
-                      setTreshold((treshold) => ({
-                        ...treshold,
+                      setThreshold((threshold) => ({
+                        ...threshold,
                         treshold: e.target.value,
                       }))
                     }
-                    value={treshold.treshold}
-                    placeholder="number new treshold"
+                    value={threshold.threshold}
+                    placeholder="number new threshold"
                   />
                 </div>
 
@@ -84,18 +83,18 @@ return (
                   <button
                     className="btn btn-primary mt-2"
                     type="submit"
-                    onClick={handleSubmit(onSubmitChangeTreshold)}
-                    disabled={isCreateChangeTresholdProposalLoading || isCreateChangeTresholdProposal}
-                    data-create-loading={isCreateChangeTresholdProposalLoading}
-                    data-create-started={isCreateChangeTresholdProposal}
+                    onClick={handleSubmit(onSubmitChangeThreshold)}
+                    disabled={isCreateChangeThresholdProposalLoading || isCreateChangeThresholdProposal}
+                    data-create-loading={isCreateChangeThresholdProposalLoading}
+                    data-create-started={isCreateChangeThresholdProposal}
                   >
                     Send
                   </button>
                 </div>
 
-                {(isPrepareErrorChangeTreshold || errorChangeTreshold) && (
+                {(isPrepareErrorChangeThreshold || errorChangeThreshold) && (
                   <div>
-                    Error: {(prepareErrorChangeTreshold || errorChangeTreshold)?.message}
+                    Error: {(prepareErrorChangeThreshold || errorChangeThreshold)?.message}
                   </div>
                 )}
               </form>

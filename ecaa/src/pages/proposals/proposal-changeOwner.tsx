@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";

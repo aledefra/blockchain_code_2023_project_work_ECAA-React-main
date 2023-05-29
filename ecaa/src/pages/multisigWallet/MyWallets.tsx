@@ -1,11 +1,10 @@
 import { ethers } from "ethers";
 import { useState, useEffect } from "react";
-import { _alchemyKey } from "../../utils/key";
 
 
 const provider = new ethers.providers.AlchemyProvider(
   "maticmum",
-_alchemyKey
+  process.env.REACT_APP_ALCHEMY_API_KEY
 
 );
 

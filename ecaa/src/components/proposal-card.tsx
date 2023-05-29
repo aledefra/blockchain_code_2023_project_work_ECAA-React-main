@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { IProposal } from "../model/proposalType-model";
 import { useNavigate, useParams } from "react-router-dom";
-import { useContractRead, useContractWrite, usePrepareContractWrite, useToken } from "wagmi";
+import { useContractRead, useContractWrite, usePrepareContractWrite} from "wagmi";
 
 
 type Props = {

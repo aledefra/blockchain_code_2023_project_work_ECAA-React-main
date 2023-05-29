@@ -13,7 +13,6 @@ export const TransferSetting = () => {
   const {
     register,
     watch,
-    formState: { errors },
   } = useForm({
     mode: "onSubmit",
     defaultValues: {
@@ -23,8 +22,6 @@ export const TransferSetting = () => {
   });
   const {
     data: addressBalance,
-    isError: balanceError,
-    isLoading: balanceLoading,
   } = useBalance({
     address: address as `0x${string}`,
   });

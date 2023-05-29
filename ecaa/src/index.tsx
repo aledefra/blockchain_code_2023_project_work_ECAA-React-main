@@ -1,4 +1,3 @@
-
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
@@ -7,13 +6,10 @@ import reportWebVitals from "./reportWebVitals";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { polygonMumbai } from "wagmi/chains";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { _alchemyKey } from "./utils/key";
 
 
+const alchemyKey = process.env.REACT_APP_ALCHEMY_API_KEY;
 
-const alchemyKey = _alchemyKey;
-
-console.log("Alchemy key: ", alchemyKey);
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -22,7 +18,7 @@ if (!alchemyKey) {
   throw new Error("Alchemy key not found");
 }
 
-const { chains, provider, webSocketProvider } = configureChains(
+const { provider, webSocketProvider } = configureChains(
   [polygonMumbai],
   [alchemyProvider({ apiKey: alchemyKey })]
 );

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
@@ -78,7 +77,7 @@ return (
                       }))
                     }
                     value={numConfirmations.numConfirmations}
-                    placeholder="number new treshold"
+                    placeholder="number new confirmations"
                   />
                 </div>
 

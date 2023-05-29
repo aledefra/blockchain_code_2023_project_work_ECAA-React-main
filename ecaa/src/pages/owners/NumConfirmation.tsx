@@ -28,7 +28,7 @@ export const NumConfirmation = ({ owners }: Props) => {
   const prepare = usePrepareContractWrite({
     address: contractAddress as `0x${string}`,
     abi: contractAbi,
-    functionName: "proposeChangeThreshold",
+    functionName: "proposeChangeNumConfirmations",
     args: [newNumberConfirmation],
   });
   const write = useContractWrite(prepare.config);
