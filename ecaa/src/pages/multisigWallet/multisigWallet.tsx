@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import { useBalance } from "wagmi";
 import { useContractRead } from "wagmi";
 import { useNavigate } from "react-router-dom";
@@ -40,7 +41,7 @@ export const MultisigWallet = () => {
 	return (
 		<div className="MyMultisig">
 			<h4>Multisig Wallet Balance:</h4>
-      <h1>{addressBalance?.value.toString()} MATIC</h1>
+      <h1>{ethers.utils.formatEther(addressBalance?.value ?? "")} MATIC</h1>
 
       <div className="mb-3">
         <a
