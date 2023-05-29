@@ -306,12 +306,15 @@ useEffect(() => {
         ['address', 'address', 'bool', 'bool', 'uint256'],
         proposal?.proposalData ?? ""
       );
+      const date = new Date(timeToUnlock * 1000);
+      const dateFormat = date.toDateString() + " at " + date.getHours() + ":" + date.getMinutes();
+
       return <p>
         Old Owner: {oldOwner}<br/>
         New Owner: {newOwner}<br/>
         I'm Here: {imHere.toString()}<br/>
         Lock: {lock.toString()}<br/>
-        Time to Unlock:{timeToUnlock.toString()}
+        Time to Unlock: {dateFormat}
       </p>
     }
 
